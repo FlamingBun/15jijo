@@ -4,7 +4,12 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("커밋 테스트");
+        static void Main(string[] args)
+        {
+            GameManager gameManager = new GameManager();
+            gameManager.Init();
+            gameManager.GameStart();
+        }
     }
 }
 

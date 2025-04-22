@@ -1,10 +1,12 @@
-﻿namespace _15jijo
+namespace _15jijo
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            GameManager gameManager = new GameManager();
+            gameManager.Init();
+            gameManager.GameStart();
         }
     }
 }

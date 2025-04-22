@@ -1,10 +1,9 @@
-﻿namespace _15jijo
+namespace _15jijo;
+
+internal class Program
 {
-    internal class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello, World!");
-        }
+        Console.WriteLine("커밋 테스트");
     }
 }

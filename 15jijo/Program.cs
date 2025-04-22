@@ -1,11 +1,7 @@
-<<<<<<< Updated upstream
-=======
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Xml.Linq;
-
->>>>>>> Stashed changes
 namespace _15jijo
 {
     internal class Program

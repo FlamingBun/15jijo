@@ -1,5 +1,3 @@
-using static DungeonEntranceScene;
-
 class DungeonEntranceScene : BaseScene
 {
     public override SceneState SceneState { get; protected set; } = SceneState.DungeonEntrance;
@@ -7,29 +5,27 @@ class DungeonEntranceScene : BaseScene
     public override SceneState InputHandle()
     {
         DrawScene(SceneState.DungeonEntrance);
-        string input = Console.ReadLine();
         DungeonEntrance dungeonEntrance = new DungeonEntrance();
+        selectionCount = 20;
 
-        //int inputNumber = -1;
         while (true)
         {
+            int minNumber = -1;
             dungeonEntrance.DungeonClearLevel();
             Console.Write("입장할 층수를 입력하세요 (1~20): ");
-
-            if (int.TryParse(Console.ReadLine(), out int floor))
+            string input = Console.ReadLine();
+            if (ConsoleHelper.CheckUserInput(input, selectionCount, ref minNumber))
             {
-                dungeonEntrance.SelectDungeon(floor);
+                if (int.Parse(input) == 0)
+                {
+                    return SceneState.Main;
+                }
+                else if (int.TryParse(input, out int floor))
+                {
+                    dungeonEntrance.SelectDungeon(floor);
+                }
             }
         }
-
-        //selectionCount = 20;
-
-        //bool isValidInput = ConsoleHelper.CheckUserInput(input,selectionCount, ref inputNumber);
-        //if (!isValidInput)
-        //{
-        //    return SceneState;
-        //}
-        //return SceneState.Main;
     }
     public class DungeonEntrance
     {

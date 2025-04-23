@@ -5,10 +5,12 @@ public enum SceneState
     Shop,
     Relax,
     Quest,
+    DungeonEntrance,
     Dungeon,
     SaveGame,
     ExitGame,
     MakeCharacter,
     Main,
     SelectJob,
+    DungeonFight
 }

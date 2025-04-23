@@ -42,6 +42,7 @@ public class GameManager
         scenes.Add(SceneState.MakeCharacter, new MakeCharacterScene());
         scenes.Add(SceneState.Main, new MainScene());
         scenes.Add(SceneState.Relax, new RelaxScene());
+        scenes.Add(SceneState.DungeonEntrance, new DungeonEntranceScene());
     }
 
     public void GameStart()

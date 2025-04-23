@@ -1,0 +1,90 @@
+using static DungeonEntranceScene;
+
+class DungeonEntranceScene : BaseScene
+{
+    public override SceneState SceneState { get; protected set; } = SceneState.DungeonEntrance;
+
+    public override SceneState InputHandle()
+    {
+        DrawScene(SceneState.DungeonEntrance);
+        string input = Console.ReadLine();
+        DungeonEntrance dungeonEntrance = new DungeonEntrance();
+
+        //int inputNumber = -1;
+        while (true)
+        {
+            dungeonEntrance.DungeonClearLevel();
+            Console.Write("입장할 층수를 입력하세요 (1~20): ");
+
+            if (int.TryParse(Console.ReadLine(), out int floor))
+            {
+                dungeonEntrance.SelectDungeon(floor);
+            }
+        }
+
+        //selectionCount = 20;
+
+        //bool isValidInput = ConsoleHelper.CheckUserInput(input,selectionCount, ref inputNumber);
+        //if (!isValidInput)
+        //{
+        //    return SceneState;
+        //}
+        //return SceneState.Main;
+    }
+    public class DungeonEntrance
+    {
+        //Dungeon dungeon = new Dungeon();
+        private const int MaxFloor = 20; // 총 20층
+        private int clearedFloor = 0; // 처음엔 0층 클리어 상태 (1층 입장 가능)
+
+
+        public void SelectDungeon(int selectFloor)
+        {
+            if (selectFloor < 1 || selectFloor > MaxFloor)
+            {
+                Console.WriteLine("\n존재하지 않는 층입니다.");
+                return;
+            }
+
+            if (selectFloor > clearedFloor + 1)
+            {
+                Console.WriteLine($"\n{clearedFloor + 1}층 클리어해야 다음층으로 넘어갈 수 있습니다.\n");
+                return;
+            }
+
+            Console.WriteLine($"\n{selectFloor}층으로 진입합니다...\n");
+            ClearDungeon(selectFloor);
+        }
+
+        private void ClearDungeon(int floor)
+        {
+            //dungeon.GetMonsterRandomAdd(floor);
+            //// 여기에 몬스터 생성/전투/보상 등 게임 진행중
+            Console.WriteLine($"{floor}층 전투 중... (예시)");
+
+            // 전투 성공했다고 가정
+            ClearFloor(floor);
+        }
+
+
+        // 클리어한 층을 확인용 나중에 옮길게요 ㅜㅠ 
+        private void ClearFloor(int floor)
+        {
+            if (floor > clearedFloor)
+            {
+                clearedFloor = floor;
+                Console.WriteLine($"{floor}층 클리어! 다음 층이 열렸습니다.\n");
+            }
+            else
+            {
+                Console.WriteLine($"{floor}층은 이미 클리어한 상태입니다.\n");
+            }
+        }
+
+        public void DungeonClearLevel()
+        {
+            Console.WriteLine($"현재까지 클리어한 층: {clearedFloor}층");
+        }
+    }
+
+}

@@ -1,14 +1,16 @@
 public class GameManager
 {
-    public static GameManager instance;
+    public static GameManager? instance;
 
-    private Dictionary<SceneState, BaseScene> scenes;
+    private Dictionary<SceneState, BaseScene>? scenes;
+
+    public Player? player;
+
+    public Skills? skills;
 
     private bool hasData;
 
     private SceneState currentSceneState;
-
-    public Player player;
 
     public GameManager() 
     {
@@ -58,10 +60,13 @@ public class GameManager
     {
         while (currentSceneState != SceneState.ExitGame) 
         {
-            currentSceneState = scenes[currentSceneState].InputHandle();
+            if (scenes != null && scenes.ContainsKey(currentSceneState))
+            {
+                currentSceneState = scenes[currentSceneState].InputHandle();
+            }
         }
-
-        // TODO: 게임 종료 함수 ex) 게임이 종료되었습니다. + n초 후 종료
+        Console.WriteLine("게임이 종료되었습니다.");
+        Thread.Sleep(1500);
     }
 }
 

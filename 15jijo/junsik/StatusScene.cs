@@ -7,7 +7,7 @@ public class StatusScene : BaseScene
         DrawScene(SceneState);
         selectionCount = 0;
 
-        string input = Console.ReadLine();
+        string? input = Console.ReadLine();
         int inputNumber = -1;
         bool isValidInput = ConsoleHelper.CheckUserInput(input, selectionCount, ref inputNumber);
 

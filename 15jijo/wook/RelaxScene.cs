@@ -1,4 +1,4 @@
-public class RelaxScene:BaseScene
+public class RelaxScene : BaseScene
 {
     public override SceneState SceneState { get; protected set; } = SceneState.Relax;
 
@@ -7,7 +7,7 @@ public class RelaxScene:BaseScene
         DrawScene(SceneState);
         selectionCount = 1;
 
-        string input = Console.ReadLine();
+        string? input = Console.ReadLine();
         int inputNumber = -1;
         bool isValidInput = ConsoleHelper.CheckUserInput(input, selectionCount, ref inputNumber);
 
@@ -16,16 +16,24 @@ public class RelaxScene:BaseScene
             return SceneState;
         }
 
-        if (inputNumber == 0) 
+        if (inputNumber == 0)
         {
             return SceneState.Main;
         }
 
-        // TODO: 플레이어 체력 회복
-        // GameManager.instance.player.HPPP회복!!
-        // GameManager.instance.player.SpendMoney!!
+        if (GameManager.instance != null)
+        {
+            Player? player = GameManager.instance.player;
+
+            if (player != null)
+            {
+                if (player.SpendGold(500))
+                {
+                    player.Heal(player.TotalHp);
+                }
+            }
+        }
+
         return SceneState.Relax;
-
     }
-
 }

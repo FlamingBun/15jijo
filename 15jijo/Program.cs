@@ -11,46 +11,13 @@ namespace _15jijo
         {
             GameManager gameManager = new GameManager();
             //gameManager.Init();
-            QuestController qc = new QuestController();
-            qc.DisplayQuest();
+            gameManager.GameStart();
             
         }
 
-        class Player
-        {
-            private float attack;
-            public float ATTACK
-            {
-                get { return attack; }
-                set
-                {
-                    attack = value;
-                }
-            }
+       
 
-            public float GetTotalAttack()
-            {
-                return ATTACK;
-            }
-
-
-
-
-            public void HuntMonster(Monster monseter)
-            {
-
-            }
-        }
-
-        class Item
-        {
-            string name;
-            public string NAME{get;set;}
-            public Item(){
-                name = "포션";
-                }
-
-        }
+     
 
         enum questType
         {
@@ -117,6 +84,7 @@ namespace _15jijo
                 int rewardItemCount = Reward_Items == null ? 0 : Reward_Items.Count;
                 if (rewardItemCount > 0)
                 {
+                    
                     //만약 보상 아이템이 존재하면 출력!
                 }
                 Print.print($"{Reward_Gold} G \n{Reward_Exp} exp\n");
@@ -140,7 +108,7 @@ namespace _15jijo
             }
             public override void makeQuestCore()
             {
-                questCore = $"{targetMonster.NAME} {goalCount}마리 처치 ({killCount}/{goalCount})\n";
+                questCore = $"-{targetMonster.NAME} {goalCount}마리 처치 ({killCount}/{goalCount})\n";
 
             }
 
@@ -211,7 +179,7 @@ namespace _15jijo
 
             public override void makeQuestCore()
             {
-                questCore = $"{statType}을 {goalStatValue}까지 올리기! {currentStatValue}/{goalStatValue})\n";
+                questCore = $"-{statType}을 {goalStatValue}까지 올리기! {currentStatValue}/{goalStatValue})\n";
             }
 
             public override void CompleteQuest()
@@ -334,30 +302,7 @@ namespace _15jijo
         }
 
 
-        abstract class Monster
-        {
-            string? name;
-            public string? NAME { get; set; }
-            int level;
-            protected int LEVEL { get; set; }
 
-            public string GetMonsterName()
-            {
-                return name;
-            }
-
-
-
-        }
-
-        class Slime : Monster
-        {
-            public Slime()
-            {
-                NAME = "slime";
-            }
-
-        }
 
     }
 }

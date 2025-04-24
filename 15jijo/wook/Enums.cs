@@ -1,8 +1,6 @@
 public enum SceneState 
 {
     Status =1,
-    Inventory,
-    Shop,
     Relax,
     Quest,
     DungeonEntrance,
@@ -12,5 +10,12 @@ public enum SceneState
     MakeCharacter,
     Main,
     SelectJob,
-    DungeonFight
+    DungeonFight,
+
+    //jaeyoon
+    Inventory,
+    ItemUse,
+    Shop,
+    Buy,
+    Sell
 }

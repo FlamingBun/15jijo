@@ -5,10 +5,16 @@ public enum SceneState
     Shop,
     Relax,
     Quest,
-    Dungeon,
+    DungeonEntrance,
     SaveGame,
     ExitGame,
     MakeCharacter,
     Main,
     SelectJob,
+    DungeonFight,
+    
+    //jaeyoon
+    ItemUse,
+    Buy,
+    Sell
 }

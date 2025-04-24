@@ -45,6 +45,9 @@ public static class ConsoleHelper
                 Console.WriteLine("원하시는 행동을 입력해주세요.\n");
                 Console.Write(">>");
                 break;
+            case SceneState.DungeonEntrance:
+                Console.WriteLine("던전입구에 입장하셨습니다.");
+                break;
         }
     }
 

@@ -35,7 +35,6 @@ public static class ConsoleHelper
                 Console.WriteLine("0. 나가기\n");
                 Console.WriteLine("원하시는 행동을 입력해주세요.\n");
                 Console.Write(">>");
-                
                 break;
             case SceneState.SelectJob:
                 Console.WriteLine("스파르타 던전에 오신 여러분 환영합니다.\n");
@@ -71,6 +70,13 @@ public static class ConsoleHelper
             return false;
         }
 
+        if (inputNumber.ToString() != _input)
+        {
+            Console.WriteLine("잘못된 입력입니다.");
+            Thread.Sleep(1500);
+            return false;
+        }
+
         _inputNumber = inputNumber;
         return true;
     }
@@ -86,6 +92,13 @@ public static class ConsoleHelper
 
         // 입력한 번호가 선택지 개수보다 크거나 0보다 작으면 false
         if (_selectionCount < inputNumber || inputNumber <= 0)
+        {
+            Console.WriteLine("잘못된 입력입니다.");
+            Thread.Sleep(1500);
+            return false;
+        }
+
+        if (inputNumber.ToString() != _input)
         {
             Console.WriteLine("잘못된 입력입니다.");
             Thread.Sleep(1500);

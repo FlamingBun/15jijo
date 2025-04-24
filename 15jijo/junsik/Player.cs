@@ -11,8 +11,9 @@ public class Player : Unit
     public override List<Skill> AvailableSkills { get; protected set; }
     public override void KillUnit()
     {
-        UpdateGold(-5000); // Update(-Gold * 0.2f) 하고싶었는데 Gold는 int형
-        UpdateExp(-100); // UpdateExp(-RequiredExp * 0.2f)
+        UpdateGold(-(int)(Gold * 0.2f));
+        UpdateExp(-(int)(RequiredExp * 0.2f));
+        //씬변환?
     }
     public Jobs Job { get; private set; }
     public int Exp { get; private set; }
@@ -45,13 +46,13 @@ public class Player : Unit
         switch (Job)
         {
             case Jobs.전사:
-                AvailableSkills.Add(new Skill(Jobs.전사, 0, "알파 스트라이크", "공격력 * 2 로 하나의 적을 공격합니다.", CurrentAttackPower * 2, 10));
+                AvailableSkills.Add(new Skill(Jobs.전사, 0, "알파 스트라이크", "공격력 * 2 로 하나의 적을 공격합니다.", CurrentAttackPower * 2, 10f));
                 break;
             case Jobs.궁수:
-                AvailableSkills.Add(new Skill(Jobs.궁수, 0, "파이어 샷", "공격력 * 2 로 하나의 적을 공격합니다.", CurrentAttackPower * 2, 10));
+                AvailableSkills.Add(new Skill(Jobs.궁수, 0, "파이어 샷", "공격력 * 2 로 하나의 적을 공격합니다.", CurrentAttackPower * 2, 10f));
                 break;
             case Jobs.법사:
-                AvailableSkills.Add(new Skill(Jobs.법사, 0, "에너지 볼", "공격력 * 2 로 하나의 적을 공격합니다.", CurrentAttackPower * 2, 10));
+                AvailableSkills.Add(new Skill(Jobs.법사, 0, "에너지 볼", "공격력 * 2 로 하나의 적을 공격합니다.", CurrentAttackPower * 2, 10f));
                 break;
         } // 임시용 스킬넣기
         BasicHp = 100f;
@@ -70,7 +71,7 @@ public class Player : Unit
 
     public void GetSkill(Jobs jobs, int skillGrade)
     {
-        
+
     }
     public void LevelUp()
     {
@@ -93,13 +94,14 @@ public class Player : Unit
         {
             Exp = 0;
         }
-        else if (Exp >= RequiredExp)
+
+        while (Exp >= RequiredExp)
         {
             LevelUp();
-            Exp %= RequiredExp;
+            Exp -= RequiredExp;
             RequiredExp += 5 * (Level + 3);
         }
-    }    //한번에 레벨업됐을때 한번고려
+    }
     public void UpdateGold(int value)
     {
         if ((value > 0 && Gold > int.MaxValue - value) ||
@@ -118,8 +120,8 @@ public class Player : Unit
     }
     public void UpdateBasicHp(float value)
     {
-        if ((value > 0 && BasicHp > float.MaxValue - value) ||
-        (value < 0 && BasicHp < float.MinValue - value))
+        if ((value > 0.0f && BasicHp > float.MaxValue - value) ||
+        (value < 0.0f && BasicHp < float.MinValue - value))
         {
             Console.WriteLine("BasicHp값이 유효하지 않습니다.");
             return;
@@ -129,8 +131,8 @@ public class Player : Unit
     }
     public void UpdateAdditionalHp(float value)
     {
-        if ((value > 0 && AdditionalHp > float.MaxValue - value) ||
-        (value < 0 && AdditionalHp < float.MinValue - value))
+        if ((value > 0.0f && AdditionalHp > float.MaxValue - value) ||
+        (value < 0.0f && AdditionalHp < float.MinValue - value))
         {
             Console.WriteLine("AdditionalHp값이 유효하지 않습니다.");
             return;
@@ -138,10 +140,10 @@ public class Player : Unit
 
         AdditionalHp += value;
     }
-    public void UpdateCurrentHp(float value)
+    public void Heal(float value)
     {
-        if ((value > 0 && CurrentHp > float.MaxValue - value) ||
-        (value < 0 && CurrentHp < float.MinValue - value))
+        if ((value > 0.0f && CurrentHp > float.MaxValue - value) ||
+        (value < 0.0f && CurrentHp < float.MinValue - value))
         {
             Console.WriteLine("CurrentHp값이 유효하지 않습니다.");
             return;
@@ -153,16 +155,11 @@ public class Player : Unit
         {
             CurrentHp = TotalHp;
         }
-        else if (CurrentHp <= 0)
-        {
-            CurrentHp = 0;
-            KillUnit();
-        }
     }
     public void UpdateBasicMp(float value)
     {
-        if ((value > 0 && BasicMp > float.MaxValue - value) ||
-        (value < 0 && BasicMp < float.MinValue - value))
+        if ((value > 0.0f && BasicMp > float.MaxValue - value) ||
+        (value < 0.0f && BasicMp < float.MinValue - value))
         {
             Console.WriteLine("BasicMp값이 유효하지 않습니다.");
             return;
@@ -172,8 +169,8 @@ public class Player : Unit
     }
     public void UpdateAdditionalMp(float value)
     {
-        if ((value > 0 && AdditionalMp > float.MaxValue - value) ||
-        (value < 0 && AdditionalMp < float.MinValue - value))
+        if ((value > 0.0f && AdditionalMp > float.MaxValue - value) ||
+        (value < 0.0f && AdditionalMp < float.MinValue - value))
         {
             Console.WriteLine("AdditionalMp값이 유효하지 않습니다.");
             return;
@@ -181,21 +178,45 @@ public class Player : Unit
 
         AdditionalMp += value;
     }
-    public void UpdateCurrentMp(float value)
+    public bool ConsumedMp(float value)
     {
-        if ((value > 0 && CurrentMp > float.MaxValue - value) ||
-        (value < 0 && CurrentMp < float.MinValue - value))
+        if ((value > 0.0f && CurrentMp > float.MaxValue - value) ||
+        (value < 0.0f && CurrentMp < float.MinValue - value))
+        {
+            Console.WriteLine("CurrentMp값이 유효하지 않습니다.");
+            return false;
+        }
+
+        CurrentMp -= value;
+
+        if (CurrentMp < 0.0f)
+        {
+            CurrentMp += value;
+            return false;
+        }
+
+        return true;
+    }
+    public void RecoveryMp(float value)
+    {
+        if ((value > 0.0f && CurrentMp > float.MaxValue - value) ||
+        (value < 0.0f && CurrentMp < float.MinValue - value))
         {
             Console.WriteLine("CurrentMp값이 유효하지 않습니다.");
             return;
         }
 
         CurrentMp += value;
-    } // 여기 MP가 0보다작을때 넣어주기
+
+        if (CurrentMp > TotalMp)
+        {
+            CurrentMp = TotalMp;
+        }
+    }
     public void UpdateBasicAttackPower(float value)
     {
-        if ((value > 0 && BasicAttackPower > float.MaxValue - value) ||
-        (value < 0 && BasicAttackPower < float.MinValue - value))
+        if ((value > 0.0f && BasicAttackPower > float.MaxValue - value) ||
+        (value < 0.0f && BasicAttackPower < float.MinValue - value))
         {
             Console.WriteLine("BasicAttackPower값이 유효하지 않습니다.");
             return;
@@ -205,8 +226,8 @@ public class Player : Unit
     }
     public void UpdateAdditionalAttackPower(float value)
     {
-        if ((value > 0 && AdditionalAttackPower > float.MaxValue - value) ||
-        (value < 0 && AdditionalAttackPower < float.MinValue - value))
+        if ((value > 0.0f && AdditionalAttackPower > float.MaxValue - value) ||
+        (value < 0.0f && AdditionalAttackPower < float.MinValue - value))
         {
             Console.WriteLine("AdditionalAttackPower값이 유효하지 않습니다.");
             return;
@@ -216,8 +237,8 @@ public class Player : Unit
     }
     public void UpdateCurrentAttackPower(float value)
     {
-        if ((value > 0 && CurrentAttackPower > float.MaxValue - value) ||
-        (value < 0 && CurrentAttackPower < float.MinValue - value))
+        if ((value > 0.0f && CurrentAttackPower > float.MaxValue - value) ||
+        (value < 0.0f && CurrentAttackPower < float.MinValue - value))
         {
             Console.WriteLine("CurrentAttackPower값이 유효하지 않습니다.");
             return;
@@ -227,8 +248,8 @@ public class Player : Unit
     }
     public void UpdateBasicDefensivePower(float value)
     {
-        if ((value > 0 && BasicDefensivePower > float.MaxValue - value) ||
-        (value < 0 && BasicDefensivePower < float.MinValue - value))
+        if ((value > 0.0f && BasicDefensivePower > float.MaxValue - value) ||
+        (value < 0.0f && BasicDefensivePower < float.MinValue - value))
         {
             Console.WriteLine("BasicDefensivePower값이 유효하지 않습니다.");
             return;
@@ -238,8 +259,8 @@ public class Player : Unit
     }
     public void UpdateAdditionalDefensivePower(float value)
     {
-        if ((value > 0 && AdditionalDefensivePower > float.MaxValue - value) ||
-        (value < 0 && AdditionalDefensivePower < float.MinValue - value))
+        if ((value > 0.0f && AdditionalDefensivePower > float.MaxValue - value) ||
+        (value < 0.0f && AdditionalDefensivePower < float.MinValue - value))
         {
             Console.WriteLine("AdditionalDefensivePower값이 유효하지 않습니다.");
             return;
@@ -249,8 +270,8 @@ public class Player : Unit
     }
     public void UpdateCurrentDefensivePower(float value)
     {
-        if ((value > 0 && CurrentDefensivePower > float.MaxValue - value) ||
-        (value < 0 && CurrentDefensivePower < float.MinValue - value))
+        if ((value > 0.0f && CurrentDefensivePower > float.MaxValue - value) ||
+        (value < 0.0f && CurrentDefensivePower < float.MinValue - value))
         {
             Console.WriteLine("CurrentDefensivePower값이 유효하지 않습니다.");
             return;

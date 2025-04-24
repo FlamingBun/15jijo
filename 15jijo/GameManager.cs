@@ -8,6 +8,8 @@ public class GameManager
 
     private SceneState currentSceneState;
 
+    public Player player;
+
     public GameManager() 
     {
         Init();
@@ -43,6 +45,13 @@ public class GameManager
         scenes.Add(SceneState.Main, new MainScene());
         scenes.Add(SceneState.Relax, new RelaxScene());
         scenes.Add(SceneState.DungeonEntrance, new DungeonEntranceScene());
+        scenes.Add(SceneState.Status, new StatusScene());
+            // [jaeyoon] 상점/인벤토리 관련
+        //scenes.Add(SceneState.Inventory, new SceneInventory());
+        //scenes.Add(SceneState.ItemUse, new SceneItemUse());
+        //scenes.Add(SceneState.Shop, new SceneShop());
+        //scenes.Add(SceneState.Buy, new SceneBuy());
+        //scenes.Add(SceneState.Sell, new SceneSell());
     }
 
     public void GameStart()

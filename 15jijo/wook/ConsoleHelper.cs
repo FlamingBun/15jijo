@@ -1,3 +1,6 @@
+using System.Buffers.Text;
+using System.Reflection.Emit;
+
 public static class ConsoleHelper
 {
     public static void ShowScene(SceneState _sceneState) 
@@ -10,7 +13,7 @@ public static class ConsoleHelper
                 Console.Write(">>");
                 break;
             case SceneState.Main:
-                // TODO: 현재 레벨 받아오기
+                // TODO: 현재 던전 레벨 받아오기
                 int dungeonClearLevel = 1;
                 Console.WriteLine("스파르타 던전에 오신 여러분 환영합니다.\n");
                 Console.WriteLine("이제 전투를 시작할 수 있습니다.\n");
@@ -26,16 +29,12 @@ public static class ConsoleHelper
                 Console.Write(">>");
                 break;
             case SceneState.Relax:
-                // TODO: Gold 받아오기
-                // int gold = GameManager.instance.player.GetGold();
-                int gold = 0;
                 Console.WriteLine("휴식하기\n");
-                Console.WriteLine($"500 G 를 내면 체력을 회복할 수 있습니다.(보유 골드 : {gold})\n");
+                Console.WriteLine($"500 G 를 내면 체력을 회복할 수 있습니다.(보유 골드 : {GameManager.instance.player.Gold})\n");
                 Console.WriteLine("1. 휴식하기");
                 Console.WriteLine("0. 나가기\n");
                 Console.WriteLine("원하시는 행동을 입력해주세요.\n");
                 Console.Write(">>");
-                
                 break;
             case SceneState.SelectJob:
                 Console.WriteLine("스파르타 던전에 오신 여러분 환영합니다.\n");
@@ -49,6 +48,31 @@ public static class ConsoleHelper
             case SceneState.DungeonEntrance:
                 Console.WriteLine("던전입구에 입장하셨습니다.");
                 break;
+            case SceneState.Status:
+                Player player = GameManager.instance.player;
+                int level = player.Level;
+                string name = player.Name;
+                Jobs job = player.Job;
+                float totalAttackPower = player.TotalAttackPower;
+                float additionalAttackPower = player.AdditionalAttackPower;
+                float totalDefensivePower = player.TotalDefensivePower;
+                float additionalDefensivePower = player.AdditionalDefensivePower;
+                float totalHp = player.TotalHp;
+                float additionalHp = player.AdditionalHp;
+                float totalMp = player.TotalMp;
+                float additionalMp = player.AdditionalMp;
+                int gold = player.Gold;
+                Console.WriteLine("상태보기");
+                Console.WriteLine("캐릭터의 정보가 표시됩니다.\n\n");
+                Console.WriteLine($"Lv. {level:D2}");
+                Console.WriteLine($"{name} ({job})");
+                Console.WriteLine($"공격력 : {totalAttackPower}{(additionalAttackPower > 0 ? $" (+{additionalAttackPower})" : "")}");
+                Console.WriteLine($"방어력 : {totalDefensivePower}{(additionalDefensivePower > 0 ? $" (+{additionalDefensivePower})" : "")}");
+                Console.WriteLine($"최대 체력 : {totalHp}{(additionalHp > 0 ? $" (+{additionalHp})" : "")}");
+                Console.WriteLine($"Gold : {gold} G\n");
+                Console.WriteLine("0. 나가기");
+                Console.Write("\n원하시는 행동을 입력해주세요.\n>>");
+                break;
         }
     }
 
@@ -59,7 +83,7 @@ public static class ConsoleHelper
 
     public static bool CheckUserInput(string _input, int _selectionCount,ref int _inputNumber) 
     {
-        if (!int.TryParse(_input, out int inputNumber)) 
+        if (!int.TryParse(_input, out int inputNumber) || inputNumber.ToString() != _input) 
         {
             Console.WriteLine("잘못된 입력입니다.");
             Thread.Sleep(1500);
@@ -80,7 +104,7 @@ public static class ConsoleHelper
 
     public static bool CheckUserInputNoZero(string _input, int _selectionCount, ref int _inputNumber)
     {
-        if (!int.TryParse(_input, out int inputNumber))
+        if (!int.TryParse(_input, out int inputNumber) || inputNumber.ToString() != _input)
         {
             Console.WriteLine("잘못된 입력입니다.");
             Thread.Sleep(1500);

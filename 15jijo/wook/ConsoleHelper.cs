@@ -29,7 +29,6 @@ public static class ConsoleHelper
                 Console.Write(">>");
                 break;
             case SceneState.Relax:
-<<<<<<< Updated upstream
                 if (GameManager.instance != null)
                 {
                     Player? player = GameManager.instance.player;
@@ -43,18 +42,6 @@ public static class ConsoleHelper
                         Console.Write(">>");
                     }
                 }
-=======
-                // TODO: Gold 받아오기
-                // int gold = GameManager.instance.player.GetGold();
-                int gold = 0;
-                Console.WriteLine("휴식하기\n");
-                Console.WriteLine($"500 G 를 내면 체력을 회복할 수 있습니다.(보유 골드 : {gold})\n");
-                Console.WriteLine("1. 휴식하기");
-                Console.WriteLine("0. 나가기\n");
-                Console.WriteLine("원하시는 행동을 입력해주세요.\n");
-                Console.Write(">>");
-
->>>>>>> Stashed changes
                 break;
             case SceneState.SelectJob:
                 Console.WriteLine("스파르타 던전에 오신 여러분 환영합니다.\n");
@@ -107,15 +94,9 @@ public static class ConsoleHelper
 
     }
 
-<<<<<<< Updated upstream
     public static bool CheckUserInput(string? _input, int _selectionCount, ref int _inputNumber)
     {
         if (!int.TryParse(_input, out int inputNumber) || inputNumber.ToString() != _input)
-=======
-    public static bool CheckUserInput(string _input, int _selectionCount, ref int _inputNumber)
-    {
-        if (!int.TryParse(_input, out int inputNumber))
->>>>>>> Stashed changes
         {
             Console.WriteLine("잘못된 입력입니다.");
             Thread.Sleep(1500);

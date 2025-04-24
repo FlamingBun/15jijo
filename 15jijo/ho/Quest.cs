@@ -276,14 +276,14 @@ namespace _15jijo.ho
         }
     }
 
-    enum questType
+    public enum questType
     {
         killMonsterQuest = 0,
         overStatQuest,
 
     }
 
-    enum questRequireStatName
+    public enum questRequireStatName
     {
         공격력 = 0,
         방어력,

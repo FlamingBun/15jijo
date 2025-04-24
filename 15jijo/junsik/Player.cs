@@ -2,12 +2,12 @@ using System.Runtime.CompilerServices;
 
 public class Player : Unit
 {
-    public override string Name { get; protected set; }
+    public override string? Name { get; protected set; }
     public override float CurrentHp { get; protected set; }
     public override float CurrentMp { get; protected set; }
     public override float CurrentAttackPower { get; protected set; }
     public override float CurrentDefensivePower { get; protected set; }
-    public override List<Skill> AvailableSkills { get; protected set; }
+    public override List<Skill>? AvailableSkills { get; protected set; }
     public override void KillUnit()
     {
         UpdateGold(-(int)(Gold * 0.2f));
@@ -33,7 +33,7 @@ public class Player : Unit
     public float TotalDefensivePower => BasicDefensivePower + AdditionalDefensivePower;
     public int Gold { get; private set; }
 
-    public Player(string _inputName, Jobs _selectedJob)
+    public Player(string? _inputName, Jobs _selectedJob)
     {
         Name = _inputName;
         Job = _selectedJob;
@@ -42,19 +42,28 @@ public class Player : Unit
         RequiredExp = 10;
         Gold = 0;
         SkillGrade = 0;
-        //AvailableSkills = new List<Skill>();
-        //switch (Job)
-        //{
-        //    case Jobs.전사:
-        //        AvailableSkills.Add(new Skill(Jobs.전사, 0, "알파 스트라이크", "공격력 * 2 로 하나의 적을 공격합니다.", CurrentAttackPower * 2, 10f));
-        //        break;
-        //    case Jobs.궁수:
-        //        AvailableSkills.Add(new Skill(Jobs.궁수, 0, "파이어 샷", "공격력 * 2 로 하나의 적을 공격합니다.", CurrentAttackPower * 2, 10f));
-        //        break;
-        //    case Jobs.법사:
-        //        AvailableSkills.Add(new Skill(Jobs.법사, 0, "에너지 볼", "공격력 * 2 로 하나의 적을 공격합니다.", CurrentAttackPower * 2, 10f));
-        //        break;
-        //} // 임시용 스킬넣기
+        AvailableSkills = new();
+        switch (Job)
+        {
+            case Jobs.전사:
+                if (GameManager.instance != null && GameManager.instance.skills != null)
+                {
+                    AvailableSkills.Add(GameManager.instance.skills.playerSkills[0]);
+                }
+                break;
+            case Jobs.궁수:
+                if (GameManager.instance != null && GameManager.instance.skills != null)
+                {
+                    AvailableSkills.Add(GameManager.instance.skills.playerSkills[1]);
+                }
+                break;
+            case Jobs.법사:
+                if (GameManager.instance != null && GameManager.instance.skills != null)
+                {
+                    AvailableSkills.Add(GameManager.instance.skills.playerSkills[2]);
+                }
+                break;
+        }
         BasicHp = 100f;
         AdditionalHp = 0f;
         CurrentHp = TotalHp;
@@ -119,6 +128,24 @@ public class Player : Unit
         {
             Gold = 0;
         }
+    }
+    public bool SpendGold(int value)
+    {
+        if ((value > 0 && Gold > int.MaxValue - value) || (value < 0 && Gold < int.MinValue - value))
+        {
+            Console.WriteLine("Gold값이 유효하지 않습니다.");
+            return false;
+        }
+
+        Gold -= value;
+
+        if (Gold < 0)
+        {
+            Gold += value;
+            return false;
+        }
+
+        return true;
     }
     public void UpdateBasicHp(float value)
     {

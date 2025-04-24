@@ -5,7 +5,7 @@ public class MakeCharacterScene : BaseScene
     public override SceneState SceneState { get; protected set; } = SceneState.MakeCharacter;
 
     private string inputName;
-    private string selectedJob;
+    private Jobs selectedJob;
     private bool isNameSaved;
     private bool isJobSelected;
 
@@ -16,8 +16,7 @@ public class MakeCharacterScene : BaseScene
 
         if (isNameSaved && isJobSelected)
         {
-            // TODO: GameManager에 캐릭터 생성
-            // GameManager.instance.player = new player(inputName, selectedJob);
+            GameManager.instance.player = new Player(inputName, selectedJob);
             return SceneState.Main;
         }
         else 
@@ -81,8 +80,7 @@ public class MakeCharacterScene : BaseScene
             }
 
 
-            // TODO: 직업을 선택
-            //selectedJob = 
+            selectedJob = (Jobs)inputNumber;
 
             return true;
         }

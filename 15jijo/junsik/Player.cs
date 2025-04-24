@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 public class Player : Unit
 {
     public override string Name { get; protected set; }
-    public override int Level { get; protected set; }
     public override float CurrentHp { get; protected set; }
     public override float CurrentMp { get; protected set; }
     public override float CurrentAttackPower { get; protected set; }
@@ -16,6 +15,7 @@ public class Player : Unit
         //씬변환?
     }
     public Jobs Job { get; private set; }
+    public int Level { get; private set; }
     public int Exp { get; private set; }
     public int RequiredExp { get; private set; }
     public int SkillGrade { get; private set; }
@@ -33,28 +33,28 @@ public class Player : Unit
     public float TotalDefensivePower => BasicDefensivePower + AdditionalDefensivePower;
     public int Gold { get; private set; }
 
-    public Player(string _inputName, int _selectedJob)
+    public Player(string _inputName, Jobs _selectedJob)
     {
         Name = _inputName;
-        Job = (Jobs)_selectedJob;
+        Job = _selectedJob;
         Level = 1;
         Exp = 0;
         RequiredExp = 10;
         Gold = 0;
         SkillGrade = 0;
-        AvailableSkills = new List<Skill>();
-        switch (Job)
-        {
-            case Jobs.전사:
-                AvailableSkills.Add(new Skill(Jobs.전사, 0, "알파 스트라이크", "공격력 * 2 로 하나의 적을 공격합니다.", CurrentAttackPower * 2, 10f));
-                break;
-            case Jobs.궁수:
-                AvailableSkills.Add(new Skill(Jobs.궁수, 0, "파이어 샷", "공격력 * 2 로 하나의 적을 공격합니다.", CurrentAttackPower * 2, 10f));
-                break;
-            case Jobs.법사:
-                AvailableSkills.Add(new Skill(Jobs.법사, 0, "에너지 볼", "공격력 * 2 로 하나의 적을 공격합니다.", CurrentAttackPower * 2, 10f));
-                break;
-        } // 임시용 스킬넣기
+        //AvailableSkills = new List<Skill>();
+        //switch (Job)
+        //{
+        //    case Jobs.전사:
+        //        AvailableSkills.Add(new Skill(Jobs.전사, 0, "알파 스트라이크", "공격력 * 2 로 하나의 적을 공격합니다.", CurrentAttackPower * 2, 10f));
+        //        break;
+        //    case Jobs.궁수:
+        //        AvailableSkills.Add(new Skill(Jobs.궁수, 0, "파이어 샷", "공격력 * 2 로 하나의 적을 공격합니다.", CurrentAttackPower * 2, 10f));
+        //        break;
+        //    case Jobs.법사:
+        //        AvailableSkills.Add(new Skill(Jobs.법사, 0, "에너지 볼", "공격력 * 2 로 하나의 적을 공격합니다.", CurrentAttackPower * 2, 10f));
+        //        break;
+        //} // 임시용 스킬넣기
         BasicHp = 100f;
         AdditionalHp = 0f;
         CurrentHp = TotalHp;
@@ -78,6 +78,8 @@ public class Player : Unit
         ++Level;
         BasicAttackPower += 0.5f;
         BasicDefensivePower += 1f;
+        CurrentHp = TotalHp;
+        CurrentMp = TotalMp;
     }
     public void UpdateExp(int value)
     {

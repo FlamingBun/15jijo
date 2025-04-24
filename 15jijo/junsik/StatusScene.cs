@@ -5,15 +5,17 @@ public class StatusScene : BaseScene
     public override SceneState InputHandle()
     {
         DrawScene(SceneState);
+        selectionCount = 0;
 
-        string? input = Console.ReadLine();
+        string input = Console.ReadLine();
+        int inputNumber = -1;
+        bool isValidInput = ConsoleHelper.CheckUserInput(input, selectionCount, ref inputNumber);
 
-        if (int.TryParse(input, out int inputNumber) && inputNumber.ToString() == input
-            && inputNumber == 0)
+        if (!isValidInput)
         {
-            return SceneState.Main;
+            return SceneState;
         }
 
-        return SceneState;
+        return SceneState.Main;
     }
 }

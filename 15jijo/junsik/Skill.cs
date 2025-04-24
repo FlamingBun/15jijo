@@ -1,13 +1,12 @@
 public class Skill
 {
-    private Jobs Job { get; }
-    private int Grade { get; }
-    private string Name { get; }
-    private string Description { get; }
-    private float Damage { get; }
-    private float ConsumedMp { get; }
+    public Jobs Job { get; private set; }
+    public int Grade { get; private set; }
+    public string Name { get; private set; }
+    public string Description { get; private set; }
+    public float Damage { get; private set; }
+    public float ConsumedMp { get; private set; }
 
-    // 나중에 다시 private
     public Skill(Jobs jobs, int grade, string name, string description, float damage, float consumedMp)
     {
         Job = jobs;
@@ -17,16 +16,4 @@ public class Skill
         Damage = damage;
         ConsumedMp = consumedMp;
     }
-
-    public List<Skill> playerSkills = new List<Skill>()
-    {
-        new Skill(Jobs.전사, 0, "알파 스트라이크", "공격력 * 2 로 하나의 적을 공격합니다.", 1 * 2.0f, 10.0f),//player.BasicAttackPower * 2
-        new Skill(Jobs.궁수, 0, "파이어 샷", "공격력 * 2 로 하나의 적을 공격합니다.", 1 * 2.0f, 10.0f),
-        new Skill(Jobs.법사, 0, "에너지 볼", "공격력 * 2 로 하나의 적을 공격합니다.", 1 * 2.0f, 10.0f)
-    };
-
-    public List<Skill> bossSkills = new List<Skill>()
-    {
-
-    };
 }

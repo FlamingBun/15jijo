@@ -1,19 +1,16 @@
 public class GameManager
 {
-    public static GameManager instance;
+    public static GameManager? instance;
 
-    private Dictionary<SceneState, BaseScene> scenes;
+    private Dictionary<SceneState, BaseScene>? scenes;
+
+    public Player? player;
+
+    public Skills? skills;
 
     private bool hasData;
 
     private SceneState currentSceneState;
-
-    //jaeyoon(상점/인벤토리 관련)
-    public static Player player;
-
-    public static Shop shop;
-
-
 
     public GameManager() 
     {
@@ -50,22 +47,26 @@ public class GameManager
         scenes.Add(SceneState.Main, new MainScene());
         scenes.Add(SceneState.Relax, new RelaxScene());
         scenes.Add(SceneState.DungeonEntrance, new DungeonEntranceScene());
+        scenes.Add(SceneState.Status, new StatusScene());
             // [jaeyoon] 상점/인벤토리 관련
-        scenes.Add(SceneState.Inventory, new SceneInventory());
-        scenes.Add(SceneState.ItemUse, new SceneItemUse());
-        scenes.Add(SceneState.Shop, new SceneShop());
-        scenes.Add(SceneState.Buy, new SceneBuy());
-        scenes.Add(SceneState.Sell, new SceneSell());
+        //scenes.Add(SceneState.Inventory, new SceneInventory());
+        //scenes.Add(SceneState.ItemUse, new SceneItemUse());
+        //scenes.Add(SceneState.Shop, new SceneShop());
+        //scenes.Add(SceneState.Buy, new SceneBuy());
+        //scenes.Add(SceneState.Sell, new SceneSell());
     }
 
     public void GameStart()
     {
         while (currentSceneState != SceneState.ExitGame) 
         {
-            currentSceneState = scenes[currentSceneState].InputHandle();
+            if (scenes != null && scenes.ContainsKey(currentSceneState))
+            {
+                currentSceneState = scenes[currentSceneState].InputHandle();
+            }
         }
-
-        // TODO: 게임 종료 함수 ex) 게임이 종료되었습니다. + n초 후 종료
+        Console.WriteLine("게임이 종료되었습니다.");
+        Thread.Sleep(1500);
     }
 }
 

@@ -8,25 +8,38 @@ class DungeonEntranceScene : BaseScene
         DungeonEntrance dungeonEntrance = new DungeonEntrance();
         selectionCount = 20;
 
-        while (true)
+        //while (true)
+        //{
+        int minNumber = -1;
+        dungeonEntrance.DungeonClearLevel();
+        Console.Write("입장할 층수를 입력하세요 (1~20): ");
+        string input = Console.ReadLine();
+        if (ConsoleHelper.CheckUserInput(input, selectionCount, ref minNumber))
         {
-            int minNumber = -1;
-            dungeonEntrance.DungeonClearLevel();
-            Console.Write("입장할 층수를 입력하세요 (1~20): ");
-            string input = Console.ReadLine();
-            if (ConsoleHelper.CheckUserInput(input, selectionCount, ref minNumber))
+            if (int.Parse(input) == 0)
             {
-                if (int.Parse(input) == 0)
-                {
-                    return SceneState.Main;
-                }
-                else if (int.TryParse(input, out int floor))
-                {
-                    dungeonEntrance.SelectDungeon(floor);
-                }
+                return SceneState.Main;
+            }
+            else if (int.TryParse(input, out int floor))
+            {
+                dungeonEntrance.SelectDungeon(floor);
+                System.Threading.Thread.Sleep(3000);
+                return SceneState.DungeonEntrance;//나중에 던전 전투 씬으로 이동해야함
+            }
+            else
+            {
+                return SceneState.DungeonEntrance;
             }
         }
+        else
+        {
+            return SceneState.DungeonEntrance;
+        }
+        //}
     }
+
+}
+
     public class DungeonEntrance
     {
         //Dungeon dungeon = new Dungeon();
@@ -82,5 +95,3 @@ class DungeonEntranceScene : BaseScene
             Console.WriteLine($"현재까지 클리어한 층: {clearedFloor}층");
         }
     }
-
-}

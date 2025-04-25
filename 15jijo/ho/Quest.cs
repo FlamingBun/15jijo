@@ -59,7 +59,10 @@ namespace _15jijo.ho
             int rewardItemCount = Reward_Items == null ? 0 : Reward_Items.Count;
             if (rewardItemCount > 0)
             {
-
+                foreach(Item item in Reward_Items)
+                {
+                    Print.print($"{item.Name} x 개수지정필요");
+                }
                 //만약 보상 아이템이 존재하면 출력!
             }
             Print.print($"{Reward_Gold} G \n{Reward_Exp} exp\n");
@@ -83,7 +86,7 @@ namespace _15jijo.ho
         }
         public override void makeQuestCore()
         {
-            questCore = $"-{targetMonster.NAME} {goalCount}마리 처치 ({killCount}/{goalCount})\n";
+            questCore = $"-{targetMonster.Name} {goalCount}마리 처치 ({killCount}/{goalCount})\n";
 
         }
 
@@ -135,19 +138,23 @@ namespace _15jijo.ho
 
     public class PlayerStatQuest : Quest
     {
-
+        Player? player;
         questRequireStatName statType;
+
         float goalStatValue;
         float currentStatValue;
 
-        public PlayerStatQuest(string name, string desc, int gold, float exp, List<Item> items, questRequireStatName type, int goal) : base(name, desc, gold, exp, items)
+        public PlayerStatQuest(string name, string desc, int gold, float exp, List<Item> items, questRequireStatName type, int goal,Player _player) : base(name, desc, gold, exp, items)
         {
             //int randomStat = new Random().Next(0, statType.Length);
             //targetStatName = statType[randomStat];
             this.goalStatValue = goal;
             this.statType = type;
+            float bonusReward = 1f + goalStatValue * 0.01f; // 만약 많이 잡는 퀘스트가 걸리면 추가보상
+            Reward_Exp = (Reward_Exp * bonusReward); // 추가보상 경험치, 골드
+            Reward_Gold = (int)(Reward_Gold * bonusReward);
             GetTargetStatValue();
-
+            player = _player;
 
         }
 
@@ -169,102 +176,33 @@ namespace _15jijo.ho
         {
             if (statType == questRequireStatName.공격력)
             {
-                //플레이어의 공격력을 currentStatValue
+                currentStatValue = player.GetTotalAttack();
             }
             else if (statType == questRequireStatName.방어력)
             {
-                //플레이어의 방어력을 currentStatValue
+                currentStatValue = player.GetTotalDefense();
             }
             else if (statType == questRequireStatName.레벨)
             {
-                //플레이어의 레벨을 currentStatValue
+                currentStatValue = player.Level;
             }
         }
 
         public void SetGoalStatValue()
         {
-            // 플레이어의 현재 레벨에 비례해서 증가
+            if(statType== questRequireStatName.레벨)
+            {
+                goalStatValue += (int)player.Level * 1.5f;
+
+            }
+            else
+            {
+                goalStatValue += player.Level * 3;
+            }
         }
     }
 
 
-
-    public class QuestController //퀘스트 씬 출력 및 퀘스트 데이터베이스 세팅 담당 클래스 
-    {
-
-        private List<Quest> questList; // 퀘스트들을 담고있는 Quest배열
-        private Monster[]? targetMonsterDB; // 몬스터 DB에서 targetMonster를 랜덤으로 지정
-        private List<Quest>? playerReceiveQuest; // 플레이어가 받은 퀘스트 목록
-        private string[]? statType; // 플레이어의 능력치를 올리는 퀘스트에 사용되는 능력치 타입
-
-
-        public QuestController() // 퀘스트 컨트롤러 생성자 
-        {
-            statType = new string[] { "공격력", "방어력", "레벨" };
-            //targetMonsterDB = ;
-            questList = SetQuestDB();
-
-        }
-
-        static List<Quest> SetQuestDB()
-        {   /*
-                 퀘스트 타입을 랜덤으로 정하여 퀘스트배열 반환하는 메서드
-                Quest[] questList = new Quest[6];
-                Random rand = new Random();
-                for (int i = 0; i < questList.Length; i++)
-                {   
-                    int r = rand.Next(0,System.Int32.MaxValue);
-                    
-                }
-                
-                return questList;
-                */
-            List<Quest> questList = new List<Quest>()
-            {
-                    new KillMonsterQuest("내일배움캠프를 위협하는 오수호 처치","내일배움캠프를 위협하는 오수호를 처리해주시게",100,100f,new List<Item>(){new Item()},new Slime(),5),
-                    new PlayerStatQuest("어쩌라고 공격력 올려와","퀘스트 출력하는 공간인데 어쩌라고",150,200f,new List<Item>(){new Item()},questRequireStatName.공격력,5)
-                };
-            return questList;
-        }
-
-        public void DisplayQuest()
-        {
-            foreach (Quest q in questList)
-            {
-                q.ShowQuest();
-                q.ShowQuestName();
-            }
-
-
-        }
-        /*
-         퀘스트 type에 따라 랜덤생성하는 메서드 
-        Quest GenerateQuest(questType type)
-        {   Random rand = new Random();
-            switch (type)
-            {
-                case questType.killMonsterQuest:
-                    int i = rand.Next(0, targetMonsterDB.Length);
-                    new KillMonsterQuest($"내일배움캠프를 위협하는 {targetMonsterDB[i].NAME} 처치", );
-                    break;
-
-
-
-            }
-
-
-            return Quest 
-
-        }
-        */
-        public void CompleteQuest()
-        {
-            //퀘스트 클리어 로직
-        }
-
-
-
-    }
 
     class Print
     {
@@ -276,18 +214,5 @@ namespace _15jijo.ho
         }
     }
 
-    public enum questType
-    {
-        killMonsterQuest = 0,
-        overStatQuest,
 
-    }
-
-    public enum questRequireStatName
-    {
-        공격력 = 0,
-        방어력,
-        레벨
-
-    }
 }

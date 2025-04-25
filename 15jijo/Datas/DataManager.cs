@@ -10,6 +10,7 @@ public class DataManager
     
     Datas<Monster> monsterDatas;
     Datas<Item> itemDatas;
+    
 
     public DataManager()
     {

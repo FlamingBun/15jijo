@@ -4,8 +4,8 @@ public class MakeCharacterScene : BaseScene
 {
     public override SceneState SceneState { get; protected set; } = SceneState.MakeCharacter;
 
-    private string inputName;
-    private string selectedJob;
+    private string? inputName;
+    private Jobs selectedJob;
     private bool isNameSaved;
     private bool isJobSelected;
 
@@ -16,8 +16,10 @@ public class MakeCharacterScene : BaseScene
 
         if (isNameSaved && isJobSelected)
         {
-            // TODO: GameManager에 캐릭터 생성
-            // GameManager.instance.player = new player(inputName, selectedJob);
+            if (GameManager.instance != null)
+            {
+                GameManager.instance.player = new Player(inputName, selectedJob);
+            }
             return SceneState.Main;
         }
         else 
@@ -40,7 +42,7 @@ public class MakeCharacterScene : BaseScene
             Console.WriteLine($"0. 취소\n");
             Console.Write($"원하시는 행동을 입력해주세요.\n>>");
 
-            string input = Console.ReadLine();
+            string? input = Console.ReadLine();
             int inputNumber = -1;
 
             bool isValidInput = ConsoleHelper.CheckUserInput(input, selectionCount, ref inputNumber);
@@ -68,7 +70,7 @@ public class MakeCharacterScene : BaseScene
         {
             DrawScene(SceneState.SelectJob);
 
-            string input = Console.ReadLine();
+            string? input = Console.ReadLine();
             int inputNumber = -1;
 
             // 직업 개수
@@ -81,8 +83,7 @@ public class MakeCharacterScene : BaseScene
             }
 
 
-            // TODO: 직업을 선택
-            //selectedJob = 
+            selectedJob = (Jobs)inputNumber;
 
             return true;
         }

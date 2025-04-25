@@ -1,17 +1,9 @@
 public class Item
 {
-    public string ItemName { get; }
-    public ItemValue ItemEffect { get; }
-    public int ItemAbility { get; }
-    public string ItemDescription { get; }
-    public int ItemPrice { get; }
-
-    public Item(string itemName, ItemValue itemEffect, int itemAbility, string itemDescription, int itemPrice)
-    {
-        ItemName = itemName;
-        ItemEffect = itemEffect;
-        ItemAbility = itemAbility;
-        ItemDescription = itemDescription;
-        ItemPrice = itemPrice;
-    }
+    public int ItemCount { get; protected set; }
+    public string ItemName { get; protected set; }
+    public ItemType ItemType { get; protected set; }
+    public int ItemAbility { get; protected set; }
+    public string ItemDescription { get; protected set; }
+    public int ItemPrice { get; protected set; }
 }

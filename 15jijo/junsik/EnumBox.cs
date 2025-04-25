@@ -5,15 +5,25 @@ public enum Jobs
     법사
 }
 
-public enum ItemValue
+public enum ItemType
 {
-    AttackPower,
-    DefensivePower,
-    Hp,
-    Mp
+    Consumable,
+    Equipment
 }
 
-enum BuyResult
+public enum EquipmentItemType
+{
+    Armor,
+    Weapon
+}
+
+public enum ConsumeItemType 
+{
+    HP,
+    MP
+}
+
+public enum BuyResult
 {
     AlreadyPurchased,
     NotEnoughGold,

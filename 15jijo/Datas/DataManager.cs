@@ -8,9 +8,9 @@ public class DataManager
     public bool isDataLoad = false;
     public bool isDataLoadFail = false;
     
-    Datas<Monster> monsterDatas;
-    Datas<Item> itemDatas;
-
+    public Datas<Monster> monsterDatas;
+    public Datas<Item> itemDatas;
+    
     public DataManager()
     {
         Init();
@@ -23,6 +23,8 @@ public class DataManager
             instance = this;
         }
 
+        monsterDatas = new Datas<Monster>();
+        itemDatas = new Datas<Item>();
         isLoading = true;
         LoadAllData();
     }
@@ -36,7 +38,7 @@ public class DataManager
 
         if (isDataLoad)
         {
-            //Console.Clear();
+            Console.Clear();
             Console.WriteLine("Enter를 입력해주세요!");
             Console.ReadLine();
             return true;
@@ -61,13 +63,23 @@ public class DataManager
             int.Parse(row[4]?.ToString() ?? "1")
         ));
 
-        var items = await LoadWithConsoleLoading("Item", "A1:F", row => new Item(
+        var equipItems = await LoadWithConsoleLoading("EquipmentItem", "A1:F", row => new EquipmentItem(
             row[0]?.ToString() ?? "",
             (ItemType)int.Parse(row[1]?.ToString() ?? "1"),
-            int.Parse(row[2]?.ToString() ?? "1"),
+            (EquipmentItemType)int.Parse(row[2]?.ToString() ?? "1"),
             int.Parse(row[3]?.ToString() ?? "1"),
             row[4]?.ToString() ?? "1",
-            int.Parse(row[3]?.ToString() ?? "1")
+            int.Parse(row[5]?.ToString() ?? "1")
+            )
+        );
+
+        var consumeItems = await LoadWithConsoleLoading("ConsumeItem", "A1:F", row => new ConsumeItem(
+            row[0]?.ToString() ?? "",
+            (ItemType)int.Parse(row[1]?.ToString() ?? "1"),
+            (ConsumeItemType)int.Parse(row[2]?.ToString() ?? "1"),
+            int.Parse(row[3]?.ToString() ?? "1"),
+            row[4]?.ToString() ?? "1",
+            int.Parse(row[5]?.ToString() ?? "1")
             )
         );
 
@@ -80,21 +92,29 @@ public class DataManager
         await Task.Delay(1000);
 
         monsterDatas = monsters;
-        itemDatas = items;
-
-        Console.WriteLine("\n\n");
-        Console.WriteLine("=====Monster=====");
-        foreach (var monster in monsterDatas.GetDatas())
+        foreach (var _item in equipItems.GetDatas())
         {
-            Console.WriteLine($"{monster.Name} {monster.TotalHp} {monster.TotalMp} {monster.CurrentAttackPower} {monster.CurrentDefensivePower}");
+            itemDatas.AddData(_item);
         }
 
-        Console.WriteLine("\n");
-        Console.WriteLine("=====Items=====");
-        foreach (var item in itemDatas.GetDatas())
+        foreach (var _item in consumeItems.GetDatas())
         {
-            Console.WriteLine($"{item.Name} | {item.Type}  | {item.Attack} | {item.Defense}  | {item.Description} | {item.Price}");
+            itemDatas.AddData(_item);
         }
+
+        //Console.WriteLine("\n\n");
+        //Console.WriteLine("=====Monster=====");
+        //foreach (var monster in monsterDatas.GetDatas())
+        //{
+        //    Console.WriteLine($"{monster.Name} {monster.TotalHp} {monster.TotalMp} {monster.CurrentAttackPower} {monster.CurrentDefensivePower}");
+        //}
+
+        //Console.WriteLine("\n");
+        //Console.WriteLine("=====Items=====");
+        //foreach (var item in itemDatas.GetDatas())
+        //{
+        //    Console.WriteLine($"{item.ItemName} | {item.ItemType}  | {item.ItemAbility} | {item.ItemDescription}  | {item.ItemPrice}");
+        //}
 
         isDataLoad = true;
     }

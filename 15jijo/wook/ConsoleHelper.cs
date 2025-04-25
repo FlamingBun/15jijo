@@ -90,19 +90,20 @@ public static class ConsoleHelper
             case SceneState.Shop:
                 if (GameManager.instance != null &&
                     GameManager.instance.player != null &&
-                    GameManager.instance.items != null &&
+                    DataManager.instance.itemDatas != null &&
                     GameManager.instance.purchasedItems != null)
                 {
-                    Items? items = GameManager.instance.items;
+                    List<Item> items = DataManager.instance.itemDatas.GetDatas();
                     Player? player = GameManager.instance.player;
                     List<Item>? purchasedItems = GameManager.instance.purchasedItems;
                     Console.WriteLine("[보유 골드]");
                     Console.WriteLine(player.Gold + " G\n");
                     Console.WriteLine("[아이템 목록]");
-                    foreach (Item item in items.shop)
+                    foreach (Item item in items)
                     {
+                        string abillityType = GetItemTypeString(item);
                         string priceDisplay = purchasedItems.Contains(item) ? "구매완료" : $"{item.ItemPrice} G";
-                        Console.WriteLine($"- {item.ItemName} | {item.ItemEffect.ToString()} +{item.ItemAbility} | {item.ItemDescription} | {priceDisplay}");
+                        Console.WriteLine($"- {item.ItemName} | {abillityType} +{item.ItemAbility} | {item.ItemDescription} | {priceDisplay}");
                     }
                     Console.WriteLine("\n1. 아이템 구매");
                     Console.WriteLine("2. 아이템 판매\n");
@@ -113,20 +114,22 @@ public static class ConsoleHelper
             case SceneState.Buying:
                 if (GameManager.instance != null &&
                     GameManager.instance.player != null &&
-                    GameManager.instance.items != null &&
+                    DataManager.instance.itemDatas != null &&
                     GameManager.instance.purchasedItems != null)
                 {
                     Player? player = GameManager.instance.player;
-                    Items? items = GameManager.instance.items;
+                    List<Item> items = DataManager.instance.itemDatas.GetDatas();
                     List<Item>? purchasedItems = GameManager.instance.purchasedItems;
                     Console.WriteLine("[보유 골드]");
                     Console.WriteLine(player.Gold + " G\n");
                     Console.WriteLine("[아이템 목록]");
-                    for (int i = 0; i < items.shop.Count; ++i)
+                    for (int i = 0; i < items.Count; ++i)
                     {
-                        Item item = items.shop[i];
+                        Item item = items[i];
+                        string abillityType = GetItemTypeString(item);
+                       
                         string priceDisplay = purchasedItems.Contains(item) ? "구매완료" : $"{item.ItemPrice} G";
-                        Console.WriteLine($"- {i + 1} {item.ItemName} | {item.ItemEffect.ToString()} +{item.ItemAbility} | {item.ItemDescription} | {priceDisplay}");
+                        Console.WriteLine($"- {i + 1} {item.ItemName} | {abillityType} +{item.ItemAbility} | {item.ItemDescription} | {priceDisplay}");
                     }
                     Console.WriteLine("\n0. 아이템 구매 취소");
                     Console.Write("\n원하시는 행동을 입력해주세요.\n>>");
@@ -152,7 +155,8 @@ public static class ConsoleHelper
                         for (int i = 0; i < items.Count; ++i)
                         {
                             Item item = items[i];
-                            Console.WriteLine($"- {i + 1} {item.ItemName} | {item.ItemEffect.ToString()} +{item.ItemAbility} | {item.ItemDescription} | {(int)(item.ItemPrice * 0.85f)}");
+                            string abillityType = GetItemTypeString(item);
+                            Console.WriteLine($"- {i + 1} {item.ItemName} | {abillityType} +{item.ItemAbility} | {item.ItemDescription} | {(int)(item.ItemPrice * 0.85f)}");
                         }
                     }
                     Console.WriteLine("\n0. 아이템 판매 취소\n");
@@ -166,7 +170,7 @@ public static class ConsoleHelper
                     GameManager.instance.inventory != null &&
                     GameManager.instance.havingItems != null)
                 {
-                    List<Item>? equippedItems = GameManager.instance.player.equippedItems;
+                    List<EquipmentItem>? equippedItems = GameManager.instance.player.equippedItems;
                     List<Item>? items = GameManager.instance.havingItems;
                     Console.WriteLine("[아이템 목록]");
                     if (!items.Any())
@@ -178,8 +182,9 @@ public static class ConsoleHelper
                         for (int i = 0; i < items.Count; ++i)
                         {
                             Item item = items[i];
+                            string abillityType = GetItemTypeString(item);
                             string? equippedDisplay = equippedItems.Contains(item) ? "[E]" : null;
-                            Console.WriteLine($"- {i + 1} {equippedDisplay}{item.ItemName} | {item.ItemEffect.ToString()} +{item.ItemAbility} | {item.ItemDescription}");
+                            Console.WriteLine($"- {equippedDisplay}{item.ItemName} | {abillityType} +{item.ItemAbility} | {item.ItemDescription}");
                         }
                     }
                     Console.WriteLine("\n1. 아이템 장착\n");
@@ -194,7 +199,7 @@ public static class ConsoleHelper
                     GameManager.instance.inventory != null &&
                     GameManager.instance.havingItems != null)
                 {
-                    List<Item>? equippedItems = GameManager.instance.player.equippedItems;
+                    List<EquipmentItem>? equippedItems = GameManager.instance.player.equippedItems;
                     List<Item>? items = GameManager.instance.havingItems;
                     Console.WriteLine("[아이템 목록]");
                     if (!items.Any())
@@ -206,8 +211,9 @@ public static class ConsoleHelper
                         for (int i = 0; i < items.Count; ++i)
                         {
                             Item item = items[i];
-                            string? equippedDisplay = items.Contains(item) ? "[E]" : null;
-                            Console.WriteLine($"- {i + 1} {equippedDisplay}{item.ItemName} | {item.ItemEffect.ToString()} +{item.ItemAbility} | {item.ItemDescription}");
+                            string abillityType = GetItemTypeString(item);
+                            string? equippedDisplay = equippedItems.Contains(item) ? "[E]" : null;
+                            Console.WriteLine($"- {i + 1} {equippedDisplay}{item.ItemName} | {abillityType} +{item.ItemAbility} | {item.ItemDescription}");
                         }
                     }
                     Console.WriteLine("\n0. 장착모드 해제");
@@ -263,5 +269,38 @@ public static class ConsoleHelper
         _inputNumber = inputNumber;
         return true;
     }
+    public static string GetItemTypeString(Item item)
+    {
+        string abillityType = "";
+        switch (item.ItemType)
+        {
+            case ItemType.Equipment:
+                EquipmentItem equipmentItem = (EquipmentItem)item;
+                switch (equipmentItem.EquipmentItemType)
+                {
+                    case EquipmentItemType.Weapon:
+                        abillityType = "공격력";
+                        break;
+                    case EquipmentItemType.Armor:
+                        abillityType = "방어력";
+                        break;
+                }
+                break;
+            case ItemType.Consumable:
+                ConsumeItem consumeItem = (ConsumeItem)item;
+                switch (consumeItem.ConsumeItemType)
+                {
+                    case ConsumeItemType.HP:
+                        abillityType = "HP";
+                        break;
+                    case ConsumeItemType.MP:
+                        abillityType = "MP";
+                        break;
+                }
+                break;
+        }
+        return abillityType;
+    }
+
 }
 

@@ -3,7 +3,7 @@ public class BuyingScene : BaseScene
     public override SceneState SceneState { get; protected set; } = SceneState.Buying;
 
     Player? player;
-    Items? items;
+    List<Item>? itemList;
     List<Item>? havingItems;
     List<Item>? purchasedItems;
 
@@ -33,7 +33,7 @@ public class BuyingScene : BaseScene
             GameManager.instance.inventory != null)
         {
             player = GameManager.instance.player;
-            items = GameManager.instance.items;
+            itemList = DataManager.instance.itemDatas.GetDatas();
             havingItems = GameManager.instance.havingItems;
             purchasedItems = GameManager.instance.purchasedItems;
         }
@@ -50,9 +50,9 @@ public class BuyingScene : BaseScene
                 }
 
                 int itemIndex = selectedIndex - 1;
-                if (items != null && itemIndex >= 0 && itemIndex < items.shop.Count)
+                if (itemList != null && itemIndex >= 0 && itemIndex < itemList.Count)
                 {
-                    BuyResult buyResult = BuyItem(items.shop[itemIndex]);
+                    BuyResult buyResult = BuyItem(itemList[itemIndex]);
                     switch (buyResult)
                     {
                         case BuyResult.AlreadyPurchased:

@@ -10,4 +10,3 @@ public abstract class BaseScene
 
     public abstract SceneState InputHandle();
 }
-

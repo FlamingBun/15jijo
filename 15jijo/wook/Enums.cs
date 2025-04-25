@@ -12,9 +12,7 @@ public enum SceneState
     Main,
     SelectJob,
     DungeonFight,
-    
-    //jaeyoon
-    ItemUse,
-    Buy,
-    Sell
+    Fitting,
+    Buying,
+    Selling
 }

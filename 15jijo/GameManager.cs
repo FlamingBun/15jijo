@@ -1,12 +1,13 @@
 public class GameManager
 {
     public static GameManager? instance;
-
     private Dictionary<SceneState, BaseScene>? scenes;
-
     public Player? player;
-
     public Skills? skills;
+    public Items? items;    // 전체 아이템
+    public List<Item>? havingItems;    // 인벤토리 갖고 있는 아이템
+    public List<Item>? purchasedItems;    // 상점에서 이미 판매한 아이템들
+    public Inventory? inventory;
 
     private bool hasData;
 
@@ -23,12 +24,15 @@ public class GameManager
         {
             instance = this;
         }
-        // TODO: 게임에 필요한 객체들 생성 및 초기화
-        
+        skills = new();
+        items = new();
+        havingItems = new();
+        purchasedItems= new();
+        inventory = new();
+
         // 만약 데이터가 없으면 false -> 캐릭터 생성씬
         hasData = false;
         InitAllScenes();
-
 
         if (hasData)
         {
@@ -48,12 +52,11 @@ public class GameManager
         scenes.Add(SceneState.Relax, new RelaxScene());
         scenes.Add(SceneState.DungeonEntrance, new DungeonEntranceScene());
         scenes.Add(SceneState.Status, new StatusScene());
-            // [jaeyoon] 상점/인벤토리 관련
-        //scenes.Add(SceneState.Inventory, new SceneInventory());
-        //scenes.Add(SceneState.ItemUse, new SceneItemUse());
-        //scenes.Add(SceneState.Shop, new SceneShop());
-        //scenes.Add(SceneState.Buy, new SceneBuy());
-        //scenes.Add(SceneState.Sell, new SceneSell());
+        scenes.Add(SceneState.Shop, new ShopScene());
+        scenes.Add(SceneState.Buying, new BuyingScene());
+        scenes.Add(SceneState.Selling, new SellingScene());
+        scenes.Add(SceneState.Inventory, new Inventory());
+        //scenes.Add(SceneState.Fitting, new FittingScene());
     }
 
     public void GameStart()

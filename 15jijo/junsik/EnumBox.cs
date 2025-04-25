@@ -4,3 +4,18 @@ public enum Jobs
     궁수,
     법사
 }
+
+public enum ItemValue
+{
+    AttackPower,
+    DefensivePower,
+    Hp,
+    Mp
+}
+
+enum BuyResult
+{
+    AlreadyPurchased,
+    NotEnoughGold,
+    Success
+}

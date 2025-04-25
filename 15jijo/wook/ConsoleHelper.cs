@@ -1,4 +1,5 @@
 using System.Buffers.Text;
+using System.Numerics;
 using System.Reflection.Emit;
 
 public static class ConsoleHelper
@@ -84,6 +85,133 @@ public static class ConsoleHelper
                         Console.WriteLine("0. 나가기");
                         Console.Write("\n원하시는 행동을 입력해주세요.\n>>");
                     }
+                }
+                break;
+            case SceneState.Shop:
+                if (GameManager.instance != null &&
+                    GameManager.instance.player != null &&
+                    GameManager.instance.items != null &&
+                    GameManager.instance.purchasedItems != null)
+                {
+                    Items? items = GameManager.instance.items;
+                    Player? player = GameManager.instance.player;
+                    List<Item>? purchasedItems = GameManager.instance.purchasedItems;
+                    Console.WriteLine("[보유 골드]");
+                    Console.WriteLine(player.Gold + " G\n");
+                    Console.WriteLine("[아이템 목록]");
+                    foreach (Item item in items.shop)
+                    {
+                        string priceDisplay = purchasedItems.Contains(item) ? "구매완료" : $"{item.ItemPrice} G";
+                        Console.WriteLine($"- {item.ItemName} | {item.ItemEffect.ToString()} +{item.ItemAbility} | {item.ItemDescription} | {priceDisplay}");
+                    }
+                    Console.WriteLine("\n1. 아이템 구매");
+                    Console.WriteLine("2. 아이템 판매\n");
+                    Console.WriteLine("0. 나가기");
+                    Console.Write("\n원하시는 행동을 입력해주세요.\n>>");
+                }
+                break;
+            case SceneState.Buying:
+                if (GameManager.instance != null &&
+                    GameManager.instance.player != null &&
+                    GameManager.instance.items != null &&
+                    GameManager.instance.purchasedItems != null)
+                {
+                    Player? player = GameManager.instance.player;
+                    Items? items = GameManager.instance.items;
+                    List<Item>? purchasedItems = GameManager.instance.purchasedItems;
+                    Console.WriteLine("[보유 골드]");
+                    Console.WriteLine(player.Gold + " G\n");
+                    Console.WriteLine("[아이템 목록]");
+                    for (int i = 0; i < items.shop.Count; ++i)
+                    {
+                        Item item = items.shop[i];
+                        string priceDisplay = purchasedItems.Contains(item) ? "구매완료" : $"{item.ItemPrice} G";
+                        Console.WriteLine($"- {i + 1} {item.ItemName} | {item.ItemEffect.ToString()} +{item.ItemAbility} | {item.ItemDescription} | {priceDisplay}");
+                    }
+                    Console.WriteLine("\n0. 아이템 구매 취소");
+                    Console.Write("\n원하시는 행동을 입력해주세요.\n>>");
+                }
+                break;
+            case SceneState.Selling:
+                if (GameManager.instance != null &&
+                    GameManager.instance.player != null &&
+                    GameManager.instance.inventory != null &&
+                    GameManager.instance.havingItems != null)
+                {
+                    Player? player = GameManager.instance.player;
+                    List<Item>? items = GameManager.instance.havingItems;
+                    Console.WriteLine("[보유 골드]");
+                    Console.WriteLine(player.Gold + " G\n");
+                    Console.WriteLine("[아이템 목록]");
+                    if (!items.Any())
+                    {
+                        Console.WriteLine("판매 가능한 아이템이 없습니다.");
+                    }
+                    else
+                    {
+                        for (int i = 0; i < items.Count; ++i)
+                        {
+                            Item item = items[i];
+                            Console.WriteLine($"- {i + 1} {item.ItemName} | {item.ItemEffect.ToString()} +{item.ItemAbility} | {item.ItemDescription} | {(int)(item.ItemPrice * 0.85f)}");
+                        }
+                    }
+                    Console.WriteLine("\n0. 아이템 판매 취소\n");
+                    Console.Write("원하시는 행동을 입력해주세요.\n>>");
+                }
+                break;
+            case SceneState.Inventory:
+                if (GameManager.instance != null &&
+                    GameManager.instance.player != null &&
+                    GameManager.instance.player.equippedItems != null &&
+                    GameManager.instance.inventory != null &&
+                    GameManager.instance.havingItems != null)
+                {
+                    List<Item>? equippedItems = GameManager.instance.player.equippedItems;
+                    List<Item>? items = GameManager.instance.havingItems;
+                    Console.WriteLine("[아이템 목록]");
+                    if (!items.Any())
+                    {
+                        Console.WriteLine("인벤토리가 비어있습니다.");
+                    }
+                    else
+                    {
+                        for (int i = 0; i < items.Count; ++i)
+                        {
+                            Item item = items[i];
+                            string? equippedDisplay = equippedItems.Contains(item) ? "[E]" : null;
+                            Console.WriteLine($"- {i + 1} {equippedDisplay}{item.ItemName} | {item.ItemEffect.ToString()} +{item.ItemAbility} | {item.ItemDescription}");
+                        }
+                    }
+                    Console.WriteLine("\n1. 아이템 장착\n");
+                    Console.WriteLine("0. 나가기");
+                    Console.Write("\n원하시는 행동을 입력해주세요.\n>>");
+                }
+                break;
+            case SceneState.Fitting:
+                if (GameManager.instance != null &&
+                    GameManager.instance.player != null &&
+                    GameManager.instance.player.equippedItems != null &&
+                    GameManager.instance.inventory != null &&
+                    GameManager.instance.havingItems != null)
+                {
+                    List<Item>? equippedItems = GameManager.instance.player.equippedItems;
+                    List<Item>? items = GameManager.instance.havingItems;
+                    Console.WriteLine("[아이템 목록]");
+                    if (!items.Any())
+                    {
+                        Console.WriteLine("장착 가능한 장비가 없습니다.");
+                    }
+                    else
+                    {
+                        for (int i = 0; i < items.Count; ++i)
+                        {
+                            Item item = items[i];
+                            string? equippedDisplay = items.Contains(item) ? "[E]" : null;
+                            Console.WriteLine($"- {i + 1} {equippedDisplay}{item.ItemName} | {item.ItemEffect.ToString()} +{item.ItemAbility} | {item.ItemDescription}");
+                        }
+                    }
+                    Console.WriteLine("\n0. 장착모드 해제");
+                    Console.Write("\n원하시는 행동을 입력해주세요.\n>>");
                 }
                 break;
         }

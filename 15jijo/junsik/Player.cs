@@ -33,11 +33,11 @@ public class Player : Unit
     public float AdditionalDefensivePower { get; private set; }
     public float TotalDefensivePower => BasicDefensivePower + AdditionalDefensivePower;
     public int Gold { get; private set; }
-    public List<Item>? equippedItems { get; private set; }//
-    public Item? equippedAttackPowerItem { get; private set; }
-    public Item? equippedDefensivePowerItem { get; private set; }
-    public Item? equippedHpItem { get; private set; }
-    public Item? equippedMpItem { get; private set; }
+    public List<EquipmentItem>? equippedItems { get; private set; }//
+    public EquipmentItem? equippedAttackPowerItem { get; private set; }
+    public EquipmentItem? equippedDefensivePowerItem { get; private set; }
+    public EquipmentItem? equippedHpItem { get; private set; }
+    public EquipmentItem? equippedMpItem { get; private set; }
 
     public Player(string? _inputName, Jobs _selectedJob)
     {
@@ -319,89 +319,57 @@ public class Player : Unit
     //    float tempBuffedAttack = CurrentAttackPower * 1.2f;
     //} 버프스킬용
 
-    public void OnEquip(Item item)
+    public void OnEquip(EquipmentItem equipmentItem)
     {
-        Player? player = GameManager.instance.player;
-        List<Item>? items = player.equippedItems;
-        Item? AttackPowerItem = player.equippedAttackPowerItem;
-        Item? DefensivePowerItem = player.equippedDefensivePowerItem;
-        Item? HpItem = player.equippedHpItem;
-        Item? MpItem = player.equippedMpItem;
+        this.equippedItems.Add(equipmentItem);
 
-        items.Add(item);
-
-        switch (item.ItemEffect)
+        switch (equipmentItem.EquipmentItemType)
         {
-            case ItemValue.AttackPower:
-                if (AttackPowerItem != null)
+            case EquipmentItemType.Weapon:
+                if (this.equippedAttackPowerItem != null)
                 {
-                    OffEquip(AttackPowerItem);
+                    OffEquip(this.equippedAttackPowerItem);
                 }
-                AttackPowerItem = item;
-                player.UpdateAdditionalAttackPower(item.ItemAbility);
+                this.equippedAttackPowerItem = equipmentItem;
+                this.UpdateAdditionalAttackPower(equipmentItem.ItemAbility);
                 break;
-            case ItemValue.DefensivePower:
-                if (DefensivePowerItem != null)
+            case EquipmentItemType.Armor:
+                if (this.equippedDefensivePowerItem != null)
                 {
-                    OffEquip(DefensivePowerItem);
+                    OffEquip(this.equippedDefensivePowerItem);
                 }
-                DefensivePowerItem = item;
-                player.UpdateAdditionalDefensivePower(item.ItemAbility);
-                break;
-            case ItemValue.Hp:
-                if (HpItem != null)
-                {
-                    OffEquip(HpItem);
-                }
-                HpItem = item;
-                player.UpdateAdditionalHp(item.ItemAbility);
-                player.Heal(item.ItemAbility);
-                break;
-            case ItemValue.Mp:
-                if (MpItem != null)
-                {
-                    OffEquip(MpItem);
-                }
-                MpItem = item;
-                player.UpdateAdditionalMp(item.ItemAbility);
-                player.RecoveryMp(item.ItemAbility);
+                this.equippedDefensivePowerItem = equipmentItem;
+                this.UpdateAdditionalDefensivePower(equipmentItem.ItemAbility);
                 break;
             default:
                 Console.WriteLine("오류입니다.");
                 break;
         }
     }
-    public void OffEquip(Item item)
+    public void OffEquip(EquipmentItem equipmentItem)
     {
-        Player? player = GameManager.instance.player;
-        List<Item>? items = player.equippedItems;
-        Item? AttackPowerItem = player.equippedAttackPowerItem;
-        Item? DefensivePowerItem = player.equippedDefensivePowerItem;
-        Item? HpItem = player.equippedHpItem;
-        Item? MpItem = player.equippedMpItem;
+        this.equippedItems.Remove(equipmentItem);
 
-        items.Remove(item);
-
-        switch (item.ItemEffect)
+        switch (equipmentItem.EquipmentItemType)
         {
-            case ItemValue.AttackPower:
-                AttackPowerItem = null;
-                player.UpdateAdditionalAttackPower(-item.ItemAbility);
+            case EquipmentItemType.Weapon:
+                equippedAttackPowerItem = null;
+                this.UpdateAdditionalAttackPower(-equipmentItem.ItemAbility);
                 break;
-            case ItemValue.DefensivePower:
-                DefensivePowerItem = null;
-                player.UpdateAdditionalDefensivePower(-item.ItemAbility);
+            case EquipmentItemType.Armor:
+                equippedDefensivePowerItem = null;
+                this.UpdateAdditionalDefensivePower(-equipmentItem.ItemAbility);
                 break;
-            case ItemValue.Hp:
-                HpItem = null;
-                player.UpdateAdditionalHp(-item.ItemAbility);
-                player.TakeDamage(item.ItemAbility);
-                break;
-            case ItemValue.Mp:
-                MpItem = null;
-                player.UpdateAdditionalMp(-item.ItemAbility);
-                player.ConsumedMp(item.ItemAbility);
-                break;
+            //case ItemValue.Hp:
+            //    HpItem = null;
+            //    player.UpdateAdditionalHp(-item.ItemAbility);
+            //    player.TakeDamage(item.ItemAbility);
+            //    break;
+            //case ItemValue.Mp:
+            //    MpItem = null;
+            //    player.UpdateAdditionalMp(-item.ItemAbility);
+            //    player.ConsumedMp(item.ItemAbility);
+            //    break;
             default:
                 Console.WriteLine("오류입니다.");
                 break;

@@ -4,7 +4,6 @@ public class GameManager
     private Dictionary<SceneState, BaseScene>? scenes;
     public Player? player;
     public Skills? skills;
-    public Items? items;    // 전체 아이템
     public List<Item>? havingItems;    // 인벤토리 갖고 있는 아이템
     public List<Item>? purchasedItems;    // 상점에서 이미 판매한 아이템들
     public Inventory? inventory;
@@ -25,7 +24,6 @@ public class GameManager
             instance = this;
         }
         skills = new();
-        items = new();
         havingItems = new();
         purchasedItems= new();
         inventory = new();
@@ -56,7 +54,7 @@ public class GameManager
         scenes.Add(SceneState.Buying, new BuyingScene());
         scenes.Add(SceneState.Selling, new SellingScene());
         scenes.Add(SceneState.Inventory, new Inventory());
-        //scenes.Add(SceneState.Fitting, new FittingScene());
+        scenes.Add(SceneState.Fitting, new FittingScene());
     }
 
     public void GameStart()

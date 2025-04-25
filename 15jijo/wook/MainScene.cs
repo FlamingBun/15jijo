@@ -9,7 +9,7 @@ public class MainScene : BaseScene
 
         string? input = Console.ReadLine();
         int inputNumber = -1;
-        bool isValidInput = ConsoleHelper.CheckUserInput(input, selectionCount, ref inputNumber);
+        bool isValidInput = ConsoleHelper.CheckUserInputNoZero(input, selectionCount, ref inputNumber);
 
         if (!isValidInput) 
         {

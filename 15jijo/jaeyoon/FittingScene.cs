@@ -3,7 +3,7 @@ public class FittingScene : BaseScene
     public override SceneState SceneState { get; protected set; } = SceneState.Fitting;
 
     private Player? player;
-    private List<Item>? equippedItems;
+    private List<EquipmentItem>? equippedItems;
     private List<Item>? items;
 
     public override SceneState InputHandle()
@@ -35,12 +35,12 @@ public class FittingScene : BaseScene
                 {
                     if (equippedItems.Contains(items[itemIndex]))
                     {
-                        player.OffEquip(items[itemIndex]);
+                        player.OffEquip((EquipmentItem)items[itemIndex]);
                         return SceneState.Fitting;
                     }
                     else
                     {
-                        player.OnEquip(items[itemIndex]);
+                        player.OnEquip((EquipmentItem)items[itemIndex]);
                         return SceneState.Fitting;
                     }
                 }

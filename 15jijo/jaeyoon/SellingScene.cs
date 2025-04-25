@@ -11,7 +11,7 @@ public class SellingScene : BaseScene
             player.equippedItems != null &&
             player.equippedItems.Contains(item))
         {
-            player.OffEquip(item);
+            player.OffEquip((EquipmentItem)item);
         }
         if (player != null && items != null)
         {

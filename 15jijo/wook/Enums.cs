@@ -1,6 +1,6 @@
-public enum SceneState 
+public enum SceneState
 {
-    Status =1,
+    Status = 1,
     Inventory,
     Shop,
     Relax,

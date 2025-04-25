@@ -3,8 +3,8 @@ public abstract class Unit
     public abstract string? Name { get; protected set; }
     public abstract float CurrentHp { get; protected set; }
     public abstract float CurrentMp { get; protected set; }
-    public abstract float CurrentAttackPower { get; protected set; }
-    public abstract float CurrentDefensivePower { get; protected set; }
+    public abstract float CurrentAttackPower { get; }
+    public abstract float CurrentDefensivePower { get; }
     public abstract List<Skill>? AvailableSkills { get; protected set; }
 
     public abstract void KillUnit();
@@ -18,6 +18,7 @@ public abstract class Unit
         }
 
         CurrentHp -= currentAttackPower;
+        // 방어력만큼 덜깎이게
 
         if (CurrentHp <= 0)
         {

@@ -175,7 +175,7 @@ public class DataManager
 
 
                 spreadsheetId = _json["SpreadsheetId"].ToString();
-                apiKey = _json["ApiKey"].ToString(); 
+                apiKey = _json["ApiKey"].ToString();
             }
         }
 
@@ -208,7 +208,7 @@ public class DataManager
     public bool LoadPlayerData()
     {
         string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "playerInfo.txt");
-        if (!File.Exists(path)) 
+        if (!File.Exists(path))
         {
             // 파일이 존재하지 않을 경우
             return false;
@@ -225,25 +225,37 @@ public class DataManager
             }
         }
 
+        // 아이템 파일이 있을 때만 불러오기
         path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventoryInfo.txt");
-        if (!File.Exists(path))
+        if (File.Exists(path))
         {
-            // 파일이 존재하지 않을 경우
-            return false;
-        }
-        using (StreamReader file = File.OpenText(path))
-        {
-            using (JsonTextReader reader = new JsonTextReader(file))
+            List<Item> items = new List<Item>();
+            using (StreamReader file = File.OpenText(path))
             {
-                JObject _json = (JObject)JToken.ReadFrom(reader);
-                GameManager.instance.havingItems = _json.ToObject<List<Item>?>();   
+                using (JsonTextReader reader = new JsonTextReader(file))
+                {
+                    JArray _json = (JArray)JToken.ReadFrom(reader);
+                    foreach (var item in _json)
+                    {
+                        if (item["EquipmentItemType"] != null)
+                        {
+                            items.Add(item.ToObject<EquipmentItem>());
+                        }
+                        else if (item["ConsumableItemType"] != null)
+                        {
+                            items.Add(item.ToObject<ConsumeItem>());
+                        }
+                    }
+
+                    GameManager.instance.havingItems = items;
+                }
             }
         }
 
         return true;
     }
 
-    public bool SavePlayerData() 
+    public bool SavePlayerData()
     {
         bool isSaved = false;
         try
@@ -257,13 +269,17 @@ public class DataManager
                 isSaved = true;
             }
 
-            path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventoryInfo.txt");
-            json = JsonConvert.SerializeObject(GameManager.instance.havingItems, Formatting.Indented);
-            using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write))
-            using (StreamWriter writer = new StreamWriter(fs))
+            // 아이템을 갖고 있을 때만 저장
+            if (GameManager.instance.havingItems.Count > 0)
             {
-                writer.Write(json);
-                isSaved = true;
+                path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventoryInfo.txt");
+                json = JsonConvert.SerializeObject(GameManager.instance.havingItems, Formatting.Indented);
+                using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+                using (StreamWriter writer = new StreamWriter(fs))
+                {
+                    writer.Write(json);
+                    isSaved = true;
+                }
             }
         }
         catch (IOException ex)

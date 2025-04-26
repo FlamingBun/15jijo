@@ -29,7 +29,7 @@ public class GameManager
         inventory = new();
 
         // 만약 데이터가 없으면 false -> 캐릭터 생성씬
-        hasData = false;
+        hasData = DataManager.instance.LoadPlayerData();
         InitAllScenes();
 
         if (hasData)
@@ -55,6 +55,7 @@ public class GameManager
         scenes.Add(SceneState.Selling, new SellingScene());
         scenes.Add(SceneState.Inventory, new Inventory());
         scenes.Add(SceneState.Fitting, new FittingScene());
+        scenes.Add(SceneState.SaveGame, new SaveScene());
     }
 
     public void GameStart()

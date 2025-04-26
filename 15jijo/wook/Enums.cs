@@ -14,7 +14,7 @@ public enum SceneState
     DungeonFight,
     Fitting,
     Buying,
-    Selling
+    Selling,
 }
 public enum questType
 {

@@ -24,18 +24,7 @@ namespace _15jijo.ho
         }
 
         static List<Quest> SetQuestDB()
-        {   /*
-                 퀘스트 타입을 랜덤으로 정하여 퀘스트배열 반환하는 메서드
-                Quest[] questList = new Quest[6];
-                Random rand = new Random();
-                for (int i = 0; i < questList.Length; i++)
-                {   
-                    int r = rand.Next(0,System.Int32.MaxValue);
-                    
-                }
-                
-                return questList;
-                */
+        { 
             List<Quest> questList = new List<Quest>();
             foreach (KillMonsterQuest quest in DataManager.instance.monsterQuest.GetDatas())
             {
@@ -49,7 +38,7 @@ namespace _15jijo.ho
             return questList;
         }
 
-        public void DisplayQuestListName()
+        public void DisplayQuestListName() // 퀘스트 리스트의 이름만 출력하는 메서드
         {
             foreach (var quest in questList.Select((value,index)=>(value,index)))
             {
@@ -60,47 +49,29 @@ namespace _15jijo.ho
         }
 
 
-        public void DisplayQuest(List<Quest> _questList) // 퀘스트 리스트를 출력하는 메서드
-        {
-            foreach (Quest q in _questList)
-            {
-                DisplayQuest(q);
-            }
-        }
-
-        public void DisplayQuest(Quest quest) // 퀘스트 리스트를 출력하는 메서드
+        public void DisplayQuest(Quest quest) // 퀘스트 하나를 출력하는 메서드
         {
             
                quest.ShowQuestName();
                quest.ShowQuest();
         }
 
-        public int GetQuestCount()
+        public void DisplayQuest(int index) // 퀘스트 하나를 출력하는 메서드
+        {
+
+            questList[index].ShowQuestName();
+            questList[index].ShowQuest();
+        }
+
+        public int GetQuestCount() // 진행 가능한 퀘스트들의 개수를 리턴
         {
             return questList.Count;
         }
 
-
-        /*
-         퀘스트 type에 따라 랜덤생성하는 메서드 
-        Quest GenerateQuest(questType type)
-        {   Random rand = new Random();
-            switch (type)
-            {
-                case questType.killMonsterQuest:
-                    int i = rand.Next(0, targetMonsterDB.Length);
-                    new KillMonsterQuest($"내일배움캠프를 위협하는 {targetMonsterDB[i].NAME} 처치", );
-                    break;
+        
 
 
 
-            }
-
-
-            return Quest 
-
-        }
-        */
         public void CompleteQuest()
         {
             //퀘스트 클리어 로직

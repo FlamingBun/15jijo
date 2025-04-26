@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -39,6 +40,7 @@ public class Player : Unit
     public EquipmentItem? equippedHpItem { get; private set; }
     public EquipmentItem? equippedMpItem { get; private set; }
 
+    // 캐릭터 처음 생성 시 호출
     public Player(string? _inputName, Jobs _selectedJob)
     {
         Name = _inputName;
@@ -86,6 +88,37 @@ public class Player : Unit
                 break;
         }
         
+    }
+
+    // 저장된 플레이어 데이터가 있을 때 사용
+    public Player(JObject json)
+    {
+        Name = json["Name"]?.ToString();
+        CurrentHp = json["CurrentHp"]?.ToObject<float>() ?? 0;
+        CurrentMp = json["CurrentMp"]?.ToObject<float>() ?? 0;
+        AvailableSkills = json["AvailableSkills"]?.ToObject<List<Skill>>();
+        Job = json["Job"]?.ToObject<Jobs>() ?? Jobs.전사;
+        Level = json["Level"]?.ToObject<int>() ?? 1;
+        Exp = json["Exp"]?.ToObject<int>() ?? 0;
+        RequiredExp = json["RequiredExp"]?.ToObject<int>() ?? 10;
+        SkillGrade = json["SkillGrade"]?.ToObject<int>() ?? 0;
+
+        BasicHp = json["BasicHp"]?.ToObject<float>() ?? 0;
+        AdditionalHp = json["AdditionalHp"]?.ToObject<float>() ?? 0;
+        BasicMp = json["BasicMp"]?.ToObject<float>() ?? 0;
+        AdditionalMp = json["AdditionalMp"]?.ToObject<float>() ?? 0;
+        BasicAttackPower = json["BasicAttackPower"]?.ToObject<float>() ?? 0;
+        AdditionalAttackPower = json["AdditionalAttackPower"]?.ToObject<float>() ?? 0;
+        BasicDefensivePower = json["BasicDefensivePower"]?.ToObject<float>() ?? 0;
+        AdditionalDefensivePower = json["AdditionalDefensivePower"]?.ToObject<float>() ?? 0;
+
+        Gold = json["Gold"]?.ToObject<int>() ?? 0;
+
+        equippedItems = json["equippedItems"]?.ToObject<List<EquipmentItem>>();
+        equippedAttackPowerItem = json["equippedAttackPowerItem"]?.ToObject<EquipmentItem>();
+        equippedDefensivePowerItem = json["equippedDefensivePowerItem"]?.ToObject<EquipmentItem>();
+        equippedHpItem = json["equippedHpItem"]?.ToObject<EquipmentItem>();
+        equippedMpItem = json["equippedMpItem"]?.ToObject<EquipmentItem>();
     }
 
     public void GetSkill(Jobs jobs, int skillGrade)

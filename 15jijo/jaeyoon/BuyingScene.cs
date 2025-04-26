@@ -32,8 +32,7 @@ public class BuyingScene : BaseScene
     }
     public override SceneState InputHandle()
     {
-        if (GameManager.instance != null &&
-            GameManager.instance.inventory != null)
+        if (GameManager.instance != null)
         {
             player = GameManager.instance.player;
             itemList = DataManager.instance.itemDatas.GetDatas();

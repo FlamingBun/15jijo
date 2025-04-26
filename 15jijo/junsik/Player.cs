@@ -120,11 +120,6 @@ public class Player : Unit
         equippedHpItem = json["equippedHpItem"]?.ToObject<EquipmentItem>();
         equippedMpItem = json["equippedMpItem"]?.ToObject<EquipmentItem>();
     }
-
-    public void GetSkill(Jobs jobs, int skillGrade)
-    {
-
-    }
     public void LevelUp()
     {
         ++Level;

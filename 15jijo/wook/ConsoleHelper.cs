@@ -174,7 +174,6 @@ public static class ConsoleHelper
             case SceneState.Selling:
                 if (GameManager.instance != null &&
                     GameManager.instance.player != null &&
-                    GameManager.instance.inventory != null &&
                     GameManager.instance.havingItems != null)
                 {
                     Player? player = GameManager.instance.player;
@@ -221,7 +220,6 @@ public static class ConsoleHelper
                 if (GameManager.instance != null &&
                     GameManager.instance.player != null &&
                     GameManager.instance.player.equippedItems != null &&
-                    GameManager.instance.inventory != null &&
                     GameManager.instance.havingItems != null)
                 {
                     List<Item>? items = GameManager.instance.havingItems;
@@ -269,7 +267,6 @@ public static class ConsoleHelper
                 if (GameManager.instance != null &&
                     GameManager.instance.player != null &&
                     GameManager.instance.player.equippedItems != null &&
-                    GameManager.instance.inventory != null &&
                     GameManager.instance.havingItems != null)
                 {
                     List<Item>? items = GameManager.instance.havingItems;

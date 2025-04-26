@@ -1,8 +1,5 @@
-using Newtonsoft.Json;
+using _15jijo.ho;
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
-using System.IO;
-using System.Numerics;
 
 public class DataManager
 {
@@ -11,10 +8,11 @@ public class DataManager
     private bool isLoading = true;
     public bool isDataLoad = false;
     public bool isDataLoadFail = false;
-
+    
     public Datas<Monster> monsterDatas;
     public Datas<Item> itemDatas;
-
+    public Datas<KillMonsterQuest> monsterQuest;
+    public Datas<PlayerStatQuest> statQuest;
     public DataManager()
     {
         Init();
@@ -29,15 +27,17 @@ public class DataManager
 
         monsterDatas = new Datas<Monster>();
         itemDatas = new Datas<Item>();
+        monsterQuest = new Datas<KillMonsterQuest>();
+        statQuest = new Datas<PlayerStatQuest>();
         isLoading = true;
         LoadAllData();
     }
 
-    public bool CheckLoadData()
+    public bool CheckLoadData() 
     {
-        // 데이터 불러오기 성공 여부를 확인하는 동안 대기
         while (!isDataLoad && !isDataLoadFail)
         {
+
         }
 
         if (isDataLoad)
@@ -55,7 +55,7 @@ public class DataManager
         return false;
     }
 
-    private async void LoadAllData()
+    private async void LoadAllData() 
     {
         var loadingTask = ShowConsoleLoading();
 
@@ -87,14 +87,6 @@ public class DataManager
             )
         );
 
-
-        isLoading = false; // 위에 데이터를 전부 받아오면 그때 isLoading을 false로 변경 -> 애니메이션은 Task를 반환
-        await loadingTask; // 애니메이션 Task가 완전히 끝날 때까지 대기
-
-        Console.Clear();
-        Console.WriteLine("데이터 로딩 완료!");
-        await Task.Delay(1000);
-
         monsterDatas = monsters;
         foreach (var _item in equipItems.GetDatas())
         {
@@ -105,6 +97,45 @@ public class DataManager
         {
             itemDatas.AddData(_item);
         }
+
+        var killMonsterQuests = await LoadWithConsoleLoading("KillMonsterQuest", "A1:G", row => new KillMonsterQuest(
+            row[0]?.ToString() ?? "", // name
+            row[1]?.ToString() ?? "", // desc
+            int.Parse(row[2]?.ToString() ?? "1"), // gold
+            int.Parse(row[3]?.ToString() ?? "1"), // exp 
+            itemDatas.GetData(row[4]?.ToString() ?? "0"), // item
+            monsterDatas.GetData(int.Parse(row[5]?.ToString() ?? "0")), // monster
+            int.Parse(row[6]?.ToString() ?? "1")) // goal
+
+
+        );
+
+        var playerStatQuest = await LoadWithConsoleLoading("KillMonsterQuest", "A1:G", row => new PlayerStatQuest(
+            row[0]?.ToString() ?? "",
+            row[1]?.ToString() ?? "",
+            int.Parse(row[2]?.ToString() ?? "1"),
+            int.Parse(row[3]?.ToString() ?? "1"),
+            itemDatas.GetData(row[4]?.ToString() ?? "0"),
+            (questRequireStatName)int.Parse(row[5]?.ToString() ?? "1"),
+            int.Parse(row[6]?.ToString() ?? "1")
+           
+            )
+
+
+        );
+        monsterQuest = killMonsterQuests;
+        statQuest = playerStatQuest;
+
+
+
+
+        isLoading = false; // 위에 데이터를 전부 받아오면 그때 isLoading을 false로 변경 -> 애니메이션은 Task를 반환
+        await loadingTask; // 애니메이션 Task가 완전히 끝날 때까지 대기
+
+        Console.Clear();
+        Console.WriteLine("데이터 로딩 완료!");
+        await Task.Delay(1000);
+
 
         //Console.WriteLine("\n\n");
         //Console.WriteLine("=====Monster=====");
@@ -125,7 +156,7 @@ public class DataManager
 
     private async Task<Datas<T>> LoadWithConsoleLoading<T>(string sheetName, string range, Func<JToken, T> parseFunc)
     {
-
+        
         var dataTask = GetDataFromGoogleSheet<T>(sheetName, range, parseFunc);
 
         var data = await dataTask;
@@ -133,7 +164,7 @@ public class DataManager
         return data;
     }
 
-
+    
     private async Task ShowConsoleLoading()
     {
         int dotCount = 0;
@@ -147,9 +178,9 @@ public class DataManager
                 Console.Write(".");
             }
 
-            if (++dotCount > 3)
+            if (++dotCount > 3) 
             {
-                dotCount = 0;
+                dotCount=0;
             }
 
             await Task.Delay(500);
@@ -159,25 +190,10 @@ public class DataManager
 
     // 비동기로 작업할 때 async함수가 void가 아니면, Task<T>를 반환한다.
     // values[i]의 타입이 JToken이고 JToken은 JSON의 모든 요소를 포괄하는 타입
-    private async Task<Datas<T>> GetDataFromGoogleSheet<T>(string sheetName, string range, Func<JToken, T> parseFunc)
+    private async Task<Datas<T>> GetDataFromGoogleSheet<T>(string sheetName,string range,Func<JToken, T> parseFunc)
     {
-        string spreadsheetId;
-        string apiKey;
-        // AppDomain.CurrentDomain.BaseDirectory는 .exe파일의 위치를 가져온다.
-        string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
-
-        // using 블록을 사용하면 파일을 읽고 난 뒤 자동으로 Stream을 닫는다.
-        using (StreamReader file = File.OpenText(path))
-        {
-            using (JsonTextReader reader = new JsonTextReader(file))
-            {
-                JObject _json = (JObject)JToken.ReadFrom(reader);
-
-
-                spreadsheetId = _json["SpreadsheetId"].ToString();
-                apiKey = _json["ApiKey"].ToString();
-            }
-        }
+        string spreadsheetId = "143M8AOaELmDidz6b7ohdmbkRB06PO91rb_ITkUzQa34";
+        string apiKey = "AIzaSyCS9EqqmRV_VbRqFGkh0CO01XHvvUXcb8I";
 
         string url = $"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheetId}/values/{sheetName}!{range}?key={apiKey}";
 
@@ -205,88 +221,9 @@ public class DataManager
         return result;
     }
 
-    public bool LoadPlayerData()
+    private bool LoadPlayerData()
     {
-        string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "playerInfo.txt");
-        if (!File.Exists(path))
-        {
-            // 파일이 존재하지 않을 경우
-            return false;
-        }
-
-        // using 블록을 사용하면 파일을 읽고 난 뒤 자동으로 Stream을 닫는다.
-        using (StreamReader file = File.OpenText(path))
-        {
-            using (JsonTextReader reader = new JsonTextReader(file))
-            {
-                JObject _json = (JObject)JToken.ReadFrom(reader);
-                Player player = new Player(_json);
-                GameManager.instance.player = player;
-            }
-        }
-
-        // 아이템 파일이 있을 때만 불러오기
-        path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventoryInfo.txt");
-        if (File.Exists(path))
-        {
-            List<Item> items = new List<Item>();
-            using (StreamReader file = File.OpenText(path))
-            {
-                using (JsonTextReader reader = new JsonTextReader(file))
-                {
-                    JArray _json = (JArray)JToken.ReadFrom(reader);
-                    foreach (var item in _json)
-                    {
-                        if (item["EquipmentItemType"] != null)
-                        {
-                            items.Add(item.ToObject<EquipmentItem>());
-                        }
-                        else if (item["ConsumableItemType"] != null)
-                        {
-                            items.Add(item.ToObject<ConsumeItem>());
-                        }
-                    }
-
-                    GameManager.instance.havingItems = items;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    public bool SavePlayerData()
-    {
-        bool isSaved = false;
-        try
-        {
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "playerInfo.txt");
-            string json = JsonConvert.SerializeObject(GameManager.instance.player, Formatting.Indented);
-            using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write))
-            using (StreamWriter writer = new StreamWriter(fs))
-            {
-                writer.Write(json);
-                isSaved = true;
-            }
-
-            // 아이템을 갖고 있을 때만 저장
-            if (GameManager.instance.havingItems.Count > 0)
-            {
-                path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventoryInfo.txt");
-                json = JsonConvert.SerializeObject(GameManager.instance.havingItems, Formatting.Indented);
-                using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write))
-                using (StreamWriter writer = new StreamWriter(fs))
-                {
-                    writer.Write(json);
-                    isSaved = true;
-                }
-            }
-        }
-        catch (IOException ex)
-        {
-            Console.WriteLine($"파일 처리 오류: {ex.Message}");
-        }
-        return isSaved;
+        return false;
     }
 }
 

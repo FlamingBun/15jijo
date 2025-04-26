@@ -1,3 +1,5 @@
+using _15jijo.ho;
+
 public class GameManager
 {
     public static GameManager? instance;
@@ -7,7 +9,7 @@ public class GameManager
     public List<Item>? havingItems;    // 인벤토리 갖고 있는 아이템
     public List<Item>? purchasedItems;    // 상점에서 이미 판매한 아이템들
     public Inventory? inventory;
-
+    public QuestController? questController;
     private bool hasData;
 
     private SceneState currentSceneState;
@@ -27,9 +29,11 @@ public class GameManager
         havingItems = new();
         purchasedItems= new();
         inventory = new();
+        questController = new();
+
 
         // 만약 데이터가 없으면 false -> 캐릭터 생성씬
-        hasData = DataManager.instance.LoadPlayerData();
+        hasData = false;
         InitAllScenes();
 
         if (hasData)
@@ -55,7 +59,7 @@ public class GameManager
         scenes.Add(SceneState.Selling, new SellingScene());
         scenes.Add(SceneState.Inventory, new Inventory());
         scenes.Add(SceneState.Fitting, new FittingScene());
-        scenes.Add(SceneState.SaveGame, new SaveScene());
+        scenes.Add(SceneState.Quest, new QuestScene());
     }
 
     public void GameStart()

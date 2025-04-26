@@ -43,9 +43,16 @@ public class SellingScene : BaseScene
 
     private void SellItem(Item item)
     {
-        if (Player.equippedItems.Contains(item))
+        if (item.ItemType == ItemType.Equipment)
         {
-            Player.OffEquip((EquipmentItem)item);
+            if (Player.equippedAttackPowerItem != null && Player.equippedAttackPowerItem.ItemName == item.ItemName) 
+            {
+                Player.OffEquip((EquipmentItem)item);
+            }
+            if (Player.equippedDefensivePowerItem!=null && Player.equippedDefensivePowerItem.ItemName == item.ItemName)
+            {
+                Player.OffEquip((EquipmentItem)item);
+            }
         }
 
         Player.UpdateGold((int)(item.ItemPrice * 0.85f));

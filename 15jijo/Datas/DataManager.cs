@@ -1,4 +1,8 @@
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
+using System.IO;
+using System.Numerics;
 
 public class DataManager
 {
@@ -7,10 +11,10 @@ public class DataManager
     private bool isLoading = true;
     public bool isDataLoad = false;
     public bool isDataLoadFail = false;
-    
+
     public Datas<Monster> monsterDatas;
     public Datas<Item> itemDatas;
-    
+
     public DataManager()
     {
         Init();
@@ -29,11 +33,11 @@ public class DataManager
         LoadAllData();
     }
 
-    public bool CheckLoadData() 
+    public bool CheckLoadData()
     {
+        // 데이터 불러오기 성공 여부를 확인하는 동안 대기
         while (!isDataLoad && !isDataLoadFail)
         {
-
         }
 
         if (isDataLoad)
@@ -51,7 +55,7 @@ public class DataManager
         return false;
     }
 
-    private async void LoadAllData() 
+    private async void LoadAllData()
     {
         var loadingTask = ShowConsoleLoading();
 
@@ -121,7 +125,7 @@ public class DataManager
 
     private async Task<Datas<T>> LoadWithConsoleLoading<T>(string sheetName, string range, Func<JToken, T> parseFunc)
     {
-        
+
         var dataTask = GetDataFromGoogleSheet<T>(sheetName, range, parseFunc);
 
         var data = await dataTask;
@@ -129,7 +133,7 @@ public class DataManager
         return data;
     }
 
-    
+
     private async Task ShowConsoleLoading()
     {
         int dotCount = 0;
@@ -143,9 +147,9 @@ public class DataManager
                 Console.Write(".");
             }
 
-            if (++dotCount > 3) 
+            if (++dotCount > 3)
             {
-                dotCount=0;
+                dotCount = 0;
             }
 
             await Task.Delay(500);
@@ -155,10 +159,25 @@ public class DataManager
 
     // 비동기로 작업할 때 async함수가 void가 아니면, Task<T>를 반환한다.
     // values[i]의 타입이 JToken이고 JToken은 JSON의 모든 요소를 포괄하는 타입
-    private async Task<Datas<T>> GetDataFromGoogleSheet<T>(string sheetName,string range,Func<JToken, T> parseFunc)
+    private async Task<Datas<T>> GetDataFromGoogleSheet<T>(string sheetName, string range, Func<JToken, T> parseFunc)
     {
-        string spreadsheetId = "143M8AOaELmDidz6b7ohdmbkRB06PO91rb_ITkUzQa34";
-        string apiKey = "AIzaSyCS9EqqmRV_VbRqFGkh0CO01XHvvUXcb8I";
+        string spreadsheetId;
+        string apiKey;
+        // AppDomain.CurrentDomain.BaseDirectory는 .exe파일의 위치를 가져온다.
+        string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+
+        // using 블록을 사용하면 파일을 읽고 난 뒤 자동으로 Stream을 닫는다.
+        using (StreamReader file = File.OpenText(path))
+        {
+            using (JsonTextReader reader = new JsonTextReader(file))
+            {
+                JObject _json = (JObject)JToken.ReadFrom(reader);
+
+
+                spreadsheetId = _json["SpreadsheetId"].ToString();
+                apiKey = _json["ApiKey"].ToString();
+            }
+        }
 
         string url = $"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheetId}/values/{sheetName}!{range}?key={apiKey}";
 
@@ -186,9 +205,88 @@ public class DataManager
         return result;
     }
 
-    private bool LoadPlayerData()
+    public bool LoadPlayerData()
     {
-        return false;
+        string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "playerInfo.txt");
+        if (!File.Exists(path))
+        {
+            // 파일이 존재하지 않을 경우
+            return false;
+        }
+
+        // using 블록을 사용하면 파일을 읽고 난 뒤 자동으로 Stream을 닫는다.
+        using (StreamReader file = File.OpenText(path))
+        {
+            using (JsonTextReader reader = new JsonTextReader(file))
+            {
+                JObject _json = (JObject)JToken.ReadFrom(reader);
+                Player player = new Player(_json);
+                GameManager.instance.player = player;
+            }
+        }
+
+        // 아이템 파일이 있을 때만 불러오기
+        path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventoryInfo.txt");
+        if (File.Exists(path))
+        {
+            List<Item> items = new List<Item>();
+            using (StreamReader file = File.OpenText(path))
+            {
+                using (JsonTextReader reader = new JsonTextReader(file))
+                {
+                    JArray _json = (JArray)JToken.ReadFrom(reader);
+                    foreach (var item in _json)
+                    {
+                        if (item["EquipmentItemType"] != null)
+                        {
+                            items.Add(item.ToObject<EquipmentItem>());
+                        }
+                        else if (item["ConsumableItemType"] != null)
+                        {
+                            items.Add(item.ToObject<ConsumeItem>());
+                        }
+                    }
+
+                    GameManager.instance.havingItems = items;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public bool SavePlayerData()
+    {
+        bool isSaved = false;
+        try
+        {
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "playerInfo.txt");
+            string json = JsonConvert.SerializeObject(GameManager.instance.player, Formatting.Indented);
+            using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+            using (StreamWriter writer = new StreamWriter(fs))
+            {
+                writer.Write(json);
+                isSaved = true;
+            }
+
+            // 아이템을 갖고 있을 때만 저장
+            if (GameManager.instance.havingItems.Count > 0)
+            {
+                path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventoryInfo.txt");
+                json = JsonConvert.SerializeObject(GameManager.instance.havingItems, Formatting.Indented);
+                using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+                using (StreamWriter writer = new StreamWriter(fs))
+                {
+                    writer.Write(json);
+                    isSaved = true;
+                }
+            }
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"파일 처리 오류: {ex.Message}");
+        }
+        return isSaved;
     }
 }
 

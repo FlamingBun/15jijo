@@ -220,6 +220,9 @@ public static class ConsoleHelper
                     Console.Write("\n원하시는 행동을 입력해주세요.\n>>");
                 }
                 break;
+            case SceneState.Quest:
+                Console.WriteLine("Quest!!\n");
+                break;
         }
     }
 

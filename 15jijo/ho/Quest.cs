@@ -61,7 +61,7 @@ namespace _15jijo.ho
             {
                 foreach(Item item in Reward_Items)
                 {
-                    Print.print($"{item.Name} x 개수지정필요");
+                    Print.print($"{item.ItemName} x 개수지정필요");
                 }
                 //만약 보상 아이템이 존재하면 출력!
             }
@@ -176,11 +176,11 @@ namespace _15jijo.ho
         {
             if (statType == questRequireStatName.공격력)
             {
-                currentStatValue = player.GetTotalAttack();
+                currentStatValue = player.TotalAttackPower;
             }
             else if (statType == questRequireStatName.방어력)
             {
-                currentStatValue = player.GetTotalDefense();
+                currentStatValue = player.TotalDefensivePower;
             }
             else if (statType == questRequireStatName.레벨)
             {

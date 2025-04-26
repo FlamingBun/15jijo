@@ -43,9 +43,13 @@ namespace _15jijo.ho
             return questList;
         }
 
-        public void DisplayPlayerQuest()
+        public void DisplayQuestListName()
         {
-            DisplayQuest(playerReceiveQuest);
+            foreach (var quest in questList.Select)
+            {
+                quest.ShowQuestName();
+            }
+
         }
         
 

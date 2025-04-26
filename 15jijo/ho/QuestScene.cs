@@ -8,14 +8,16 @@ namespace _15jijo.ho
 {
     public class QuestScene : BaseScene
     {
-        QuestController qc = new QuestController();
+        
 
         public override SceneState SceneState { get; protected set; } = SceneState.Quest;
 
         public override SceneState InputHandle()
         {
             DrawScene(SceneState);
-            
+            //selectionCount = GameManager.instance.questController.QuestList.Count + 1;
+            GameManager.instance.questController.DisplayQuest();
+
 
 
 

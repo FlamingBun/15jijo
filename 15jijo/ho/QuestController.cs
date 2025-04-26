@@ -36,22 +36,29 @@ namespace _15jijo.ho
                 
                 return questList;
                 */
-            List<Quest> questList = new List<Quest>()
+            List<Quest> questList = new List<Quest>();
+            foreach (KillMonsterQuest quest in DataManager.instance.monsterQuest.GetDatas())
             {
-                //스프레드 시트에서 데이터를 가져와서 퀘스트 생성.
-            };
+                questList.Add(quest);
+            }
+            foreach (PlayerStatQuest quest in DataManager.instance.statQuest.GetDatas())
+            {
+                quest.player = GameManager.instance.player;
+                questList.Add(quest);
+            }
             return questList;
         }
 
         public void DisplayQuestListName()
         {
-            foreach (var quest in questList.Select)
+            foreach (var quest in questList.Select((value,index)=>(value,index)))
             {
-                quest.ShowQuestName();
+                Console.Write($"{quest.index+1}. ");
+                quest.value.ShowQuestName();
             }
 
         }
-        
+
 
         public void DisplayQuest(List<Quest> _questList) // 퀘스트 리스트를 출력하는 메서드
         {
@@ -66,6 +73,11 @@ namespace _15jijo.ho
             
                quest.ShowQuestName();
                quest.ShowQuest();
+        }
+
+        public int GetQuestCount()
+        {
+            return questList.Count;
         }
 
 

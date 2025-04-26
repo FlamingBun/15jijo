@@ -1,3 +1,4 @@
+using _15jijo.ho;
 using Newtonsoft.Json.Linq;
 
 public class DataManager
@@ -10,7 +11,8 @@ public class DataManager
     
     public Datas<Monster> monsterDatas;
     public Datas<Item> itemDatas;
-    
+    public Datas<KillMonsterQuest> monsterQuest;
+    public Datas<PlayerStatQuest> statQuest;
     public DataManager()
     {
         Init();
@@ -25,6 +27,8 @@ public class DataManager
 
         monsterDatas = new Datas<Monster>();
         itemDatas = new Datas<Item>();
+        monsterQuest = new Datas<KillMonsterQuest>();
+        statQuest = new Datas<PlayerStatQuest>();
         isLoading = true;
         LoadAllData();
     }
@@ -83,14 +87,6 @@ public class DataManager
             )
         );
 
-
-        isLoading = false; // 위에 데이터를 전부 받아오면 그때 isLoading을 false로 변경 -> 애니메이션은 Task를 반환
-        await loadingTask; // 애니메이션 Task가 완전히 끝날 때까지 대기
-
-        Console.Clear();
-        Console.WriteLine("데이터 로딩 완료!");
-        await Task.Delay(1000);
-
         monsterDatas = monsters;
         foreach (var _item in equipItems.GetDatas())
         {
@@ -101,6 +97,45 @@ public class DataManager
         {
             itemDatas.AddData(_item);
         }
+
+        var killMonsterQuests = await LoadWithConsoleLoading("KillMonsterQuest", "A1:G", row => new KillMonsterQuest(
+            row[0]?.ToString() ?? "", // name
+            row[1]?.ToString() ?? "", // desc
+            int.Parse(row[2]?.ToString() ?? "1"), // gold
+            int.Parse(row[3]?.ToString() ?? "1"), // exp 
+            itemDatas.GetData(row[4]?.ToString() ?? "0"), // item
+            monsterDatas.GetData(int.Parse(row[5]?.ToString() ?? "0")), // monster
+            int.Parse(row[6]?.ToString() ?? "1")) // goal
+
+
+        );
+
+        var playerStatQuest = await LoadWithConsoleLoading("KillMonsterQuest", "A1:G", row => new PlayerStatQuest(
+            row[0]?.ToString() ?? "",
+            row[1]?.ToString() ?? "",
+            int.Parse(row[2]?.ToString() ?? "1"),
+            int.Parse(row[3]?.ToString() ?? "1"),
+            itemDatas.GetData(row[4]?.ToString() ?? "0"),
+            (questRequireStatName)int.Parse(row[5]?.ToString() ?? "1"),
+            int.Parse(row[6]?.ToString() ?? "1")
+           
+            )
+
+
+        );
+        monsterQuest = killMonsterQuests;
+        statQuest = playerStatQuest;
+
+
+
+
+        isLoading = false; // 위에 데이터를 전부 받아오면 그때 isLoading을 false로 변경 -> 애니메이션은 Task를 반환
+        await loadingTask; // 애니메이션 Task가 완전히 끝날 때까지 대기
+
+        Console.Clear();
+        Console.WriteLine("데이터 로딩 완료!");
+        await Task.Delay(1000);
+
 
         //Console.WriteLine("\n\n");
         //Console.WriteLine("=====Monster=====");

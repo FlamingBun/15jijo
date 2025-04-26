@@ -15,9 +15,16 @@ namespace _15jijo.ho
         public override SceneState InputHandle()
         {
             DrawScene(SceneState);
-            //selectionCount = GameManager.instance.questController.QuestList.Count + 1;
-            GameManager.instance.questController.DisplayQuest();
-
+         
+            
+            selectionCount = GameManager.instance.questController.GetQuestCount() + 1;
+            string? input = Console.ReadLine();
+            int inputNumber = -1;
+            bool isValidInput = ConsoleHelper.CheckUserInput(input, selectionCount, ref inputNumber);
+            if (!isValidInput)
+            {
+                return SceneState;
+            }
 
 
 

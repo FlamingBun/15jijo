@@ -13,7 +13,7 @@ namespace _15jijo.ho
         protected string? QuestName { get; set; } // 퀘스트 이름
         protected string? QuestDesc { get; set; } // 퀘스트 설명
         protected int Reward_Gold { get; set; } // 보상 골드
-        protected float Reward_Exp { get; set; } // 보상 경험치
+        protected int Reward_Exp { get; set; } // 보상 경험치
         protected List<Item>? Reward_Items { get; set; } // 보상 아이템
         public bool IsClear { get; set; } = false;
         public bool IsReceive { get; set; } = false;
@@ -22,7 +22,7 @@ namespace _15jijo.ho
         public abstract void CompleteQuest(); // 퀘스트 유형 별 퀘스트 완료 로직 구현을 오버라이딩 할 추상 메서드
         public abstract void makeQuestCore(); // 퀘스트 유형 별 퀘스트 핵심 출력 로직 구현을 오버라이딩 할 추상 메서드 
 
-        public Quest(string name, string desc, int gold, float exp, List<Item> items)
+        public Quest(string name, string desc, int gold, int exp, List<Item> items)
         {
             this.QuestName = name;
             this.QuestDesc = desc;
@@ -50,6 +50,8 @@ namespace _15jijo.ho
             Print.print($"{QuestName} {currentQuestState}\n");
         }
 
+        
+
         public virtual void ShowQuest()
         {
             ShowQuestName();
@@ -74,12 +76,12 @@ namespace _15jijo.ho
         private int killCount = 0;
         private int goalCount = 0;
         private Monster targetMonster;
-        public KillMonsterQuest(string name, string desc, int gold, float exp, List<Item> items, Monster targetMonster, int goal) : base(name, desc, gold, exp, items)
+        public KillMonsterQuest(string name, string desc, int gold, int exp, List<Item> items, Monster targetMonster, int goal) : base(name, desc, gold, exp, items)
         {
             this.targetMonster = targetMonster;
             this.goalCount = goal;
             float bonusReward = 1f + goalCount * 0.1f; // 만약 많이 잡는 퀘스트가 걸리면 추가보상
-            Reward_Exp = (Reward_Exp * bonusReward); // 추가보상 경험치, 골드
+            Reward_Exp = (int)(Reward_Exp * bonusReward); // 추가보상 경험치, 골드
             Reward_Gold = (int)(Reward_Gold * bonusReward);
             makeQuestCore();
 
@@ -138,23 +140,22 @@ namespace _15jijo.ho
 
     public class PlayerStatQuest : Quest
     {
-        Player? player;
+        public Player? player;
         questRequireStatName statType;
 
         float goalStatValue;
         float currentStatValue;
 
-        public PlayerStatQuest(string name, string desc, int gold, float exp, List<Item> items, questRequireStatName type, int goal,Player _player) : base(name, desc, gold, exp, items)
+        public PlayerStatQuest(string name, string desc, int gold, int exp, List<Item> items, questRequireStatName type, int goal) : base(name, desc, gold, exp, items)
         {
             //int randomStat = new Random().Next(0, statType.Length);
             //targetStatName = statType[randomStat];
             this.goalStatValue = goal;
             this.statType = type;
             float bonusReward = 1f + goalStatValue * 0.01f; // 만약 많이 잡는 퀘스트가 걸리면 추가보상
-            Reward_Exp = (Reward_Exp * bonusReward); // 추가보상 경험치, 골드
+            Reward_Exp = (int)(Reward_Exp * bonusReward); // 추가보상 경험치, 골드
             Reward_Gold = (int)(Reward_Gold * bonusReward);
-            GetTargetStatValue();
-            player = _player;
+            //GetTargetStatValue();
 
         }
 

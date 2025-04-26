@@ -2,20 +2,13 @@ public class FittingScene : BaseScene
 {
     public override SceneState SceneState { get; protected set; } = SceneState.Fitting;
 
-    private Player? player;
-    private List<EquipmentItem>? equippedItems;
-    private List<Item>? items;
-
     public override SceneState InputHandle()
     {
-        if (GameManager.instance != null &&
-            GameManager.instance.player != null &&
-            GameManager.instance.inventory != null)
-        {
-            player = GameManager.instance.player;
-            equippedItems = GameManager.instance.player.equippedItems;
-            items = GameManager.instance.havingItems;
-        }
+        Player? player = GameManager.instance.player;
+        List<EquipmentItem>? equippedItems = GameManager.instance.player.equippedItems;
+        List<Item>? items = GameManager.instance.havingItems;
+        List<Item>? equipmentItems = items.Where(item => item.ItemType == ItemType.Equipment).ToList();
+
         while (true)
         {
             DrawScene(SceneState);
@@ -29,18 +22,22 @@ public class FittingScene : BaseScene
                 }
 
                 int itemIndex = selectedIndex - 1;
-                if (equippedItems != null &&
-                    items != null &&
-                    itemIndex >= 0 && itemIndex < items.Count)
+                if (itemIndex >= 0 && itemIndex < equipmentItems.Count)
                 {
-                    if (equippedItems.Contains(items[itemIndex]))
+                    Item selectedItem = equipmentItems[itemIndex];
+
+                    if (equippedItems.Contains(selectedItem))
                     {
-                        player.OffEquip((EquipmentItem)items[itemIndex]);
+                        player.OffEquip((EquipmentItem)selectedItem);
+                        Console.WriteLine("장비를 해제 하였습니다.");
+                        Thread.Sleep(1500);
                         return SceneState.Fitting;
                     }
                     else
                     {
-                        player.OnEquip((EquipmentItem)items[itemIndex]);
+                        player.OnEquip((EquipmentItem)selectedItem);
+                        Console.WriteLine("장비를 장착 하였습니다.");
+                        Thread.Sleep(1500);
                         return SceneState.Fitting;
                     }
                 }

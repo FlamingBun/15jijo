@@ -127,7 +127,7 @@ public static class ConsoleHelper
                     {
                         Item item = items[i];
                         string abillityType = GetItemTypeString(item);
-                       
+
                         string priceDisplay = purchasedItems.Contains(item) ? "구매완료" : $"{item.ItemPrice} G";
                         Console.WriteLine($"- {i + 1} {item.ItemName} | {abillityType} +{item.ItemAbility} | {item.ItemDescription} | {priceDisplay}");
                     }
@@ -172,22 +172,43 @@ public static class ConsoleHelper
                 {
                     List<EquipmentItem>? equippedItems = GameManager.instance.player.equippedItems;
                     List<Item>? items = GameManager.instance.havingItems;
-                    Console.WriteLine("[아이템 목록]");
-                    if (!items.Any())
+                    Console.WriteLine("[장비 아이템 목록]");
+                    if (!items.Any(item => item.ItemType == ItemType.Equipment))
                     {
-                        Console.WriteLine("인벤토리가 비어있습니다.");
+                        Console.WriteLine("장비 아이템이 없습니다.");
                     }
                     else
                     {
                         for (int i = 0; i < items.Count; ++i)
                         {
-                            Item item = items[i];
-                            string abillityType = GetItemTypeString(item);
-                            string? equippedDisplay = equippedItems.Contains(item) ? "[E]" : null;
-                            Console.WriteLine($"- {equippedDisplay}{item.ItemName} | {abillityType} +{item.ItemAbility} | {item.ItemDescription}");
+                            if (items[i].ItemType == ItemType.Equipment)
+                            {
+                                Item item = items[i];
+                                string abillityType = GetItemTypeString(item);
+                                string? equippedDisplay = equippedItems.Contains(item) ? "[E]" : null;
+                                Console.WriteLine($"- {equippedDisplay}{item.ItemName} | {abillityType} +{item.ItemAbility} | {item.ItemDescription}");
+                            }
                         }
                     }
-                    Console.WriteLine("\n1. 아이템 장착\n");
+                    Console.WriteLine("\n[소비 아이템 목록]");
+                    if (!items.Any(item => item.ItemType == ItemType.Consumable))
+                    {
+                        Console.WriteLine("소비 아이템이 없습니다.");
+                    }
+                    else
+                    {
+                        for (int i = 0; i < items.Count; ++i)
+                        {
+                            if (items[i].ItemType == ItemType.Consumable)
+                            {
+                                Item item = items[i];
+                                string abillityType = GetItemTypeString(item);
+                                Console.WriteLine($"- {item.ItemName} | {abillityType} +{item.ItemAbility} | {item.ItemDescription}");
+                            }
+                        }
+                    }
+                    Console.WriteLine("\n1. 장착관리");
+                    Console.WriteLine("2. 소비 아이템 사용\n");
                     Console.WriteLine("0. 나가기");
                     Console.Write("\n원하시는 행동을 입력해주세요.\n>>");
                 }
@@ -201,8 +222,8 @@ public static class ConsoleHelper
                 {
                     List<EquipmentItem>? equippedItems = GameManager.instance.player.equippedItems;
                     List<Item>? items = GameManager.instance.havingItems;
-                    Console.WriteLine("[아이템 목록]");
-                    if (!items.Any())
+                    Console.WriteLine("[장비 아이템 목록]");
+                    if (!items.Any(item => item.ItemType == ItemType.Equipment))
                     {
                         Console.WriteLine("장착 가능한 장비가 없습니다.");
                     }
@@ -210,13 +231,42 @@ public static class ConsoleHelper
                     {
                         for (int i = 0; i < items.Count; ++i)
                         {
-                            Item item = items[i];
-                            string abillityType = GetItemTypeString(item);
-                            string? equippedDisplay = equippedItems.Contains(item) ? "[E]" : null;
-                            Console.WriteLine($"- {i + 1} {equippedDisplay}{item.ItemName} | {abillityType} +{item.ItemAbility} | {item.ItemDescription}");
+                            if (items[i].ItemType == ItemType.Equipment)
+                            {
+                                Item item = items[i];
+                                string abillityType = GetItemTypeString(item);
+                                string? equippedDisplay = equippedItems.Contains(item) ? "[E]" : null;
+                                Console.WriteLine($"- {i + 1} {equippedDisplay}{item.ItemName} | {abillityType} +{item.ItemAbility} | {item.ItemDescription}");
+                            }
                         }
                     }
-                    Console.WriteLine("\n0. 장착모드 해제");
+                    Console.WriteLine("\n0. 돌아가기");
+                    Console.Write("\n원하시는 행동을 입력해주세요.\n>>");
+                }
+                break;
+            case SceneState.Eating:
+                if (GameManager.instance != null &&
+                    GameManager.instance.havingItems != null)
+                {
+                    List<Item>? items = GameManager.instance.havingItems;
+                    Console.WriteLine("[소비 아이템 목록]");
+                    if (!items.Any(item => item.ItemType == ItemType.Consumable))
+                    {
+                        Console.WriteLine("사용 가능한 아이템이 없습니다.");
+                    }
+                    else
+                    {
+                        for (int i = 0; i < items.Count; ++i)
+                        {
+                            if (items[i].ItemType == ItemType.Consumable)
+                            {
+                                Item item = items[i];
+                                string abillityType = GetItemTypeString(item);
+                                Console.WriteLine($"- {i + 1} {item.ItemName} | {abillityType} +{item.ItemAbility} | {item.ItemDescription}");
+                            }
+                        }
+                    }
+                    Console.WriteLine("\n0. 돌아가기");
                     Console.Write("\n원하시는 행동을 입력해주세요.\n>>");
                 }
                 break;

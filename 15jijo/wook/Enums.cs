@@ -13,6 +13,7 @@ public enum SceneState
     SelectJob,
     DungeonFight,
     Fitting,
+    Eating,
     Buying,
     Selling
 }

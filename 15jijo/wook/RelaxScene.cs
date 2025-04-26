@@ -30,10 +30,16 @@ public class RelaxScene : BaseScene
                 if (player.SpendGold(500))
                 {
                     player.Heal(player.TotalHp);
+                    Console.WriteLine("휴식을 완료하였습니다.");
+                    Thread.Sleep(1500);
+                }
+                else
+                {
+                    Console.WriteLine("Gold 가 부족합니다.");
+                    Thread.Sleep(1500);
                 }
             }
         }
-
         return SceneState.Relax;
     }
 }

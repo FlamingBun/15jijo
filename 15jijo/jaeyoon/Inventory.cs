@@ -5,7 +5,7 @@ public class Inventory : BaseScene
     public override SceneState InputHandle()
     {
         DrawScene(SceneState);
-        selectionCount = 1;
+        selectionCount = 2;
 
         string? input = Console.ReadLine();
         int inputNumber = -1;
@@ -22,6 +22,8 @@ public class Inventory : BaseScene
                 return SceneState.Main;
             case 1:
                 return SceneState.Fitting;
+            case 2:
+                return SceneState.Eating;
             default:
                 Console.WriteLine("로직오류입니다.");
                 return SceneState;

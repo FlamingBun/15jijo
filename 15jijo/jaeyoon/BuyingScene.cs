@@ -21,16 +21,18 @@ public class BuyingScene : BaseScene
 
         if (purchasedItems != null && havingItems != null)
         {
-            purchasedItems.Add(item);
             havingItems.Add(item);
+            if (item.ItemType == ItemType.Equipment)
+            {
+                purchasedItems.Add(item);
+            }
         }
 
         return BuyResult.Success;
     }
     public override SceneState InputHandle()
     {
-        if (GameManager.instance != null &&
-            GameManager.instance.inventory != null)
+        if (GameManager.instance != null)
         {
             player = GameManager.instance.player;
             itemList = DataManager.instance.itemDatas.GetDatas();

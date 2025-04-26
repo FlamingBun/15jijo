@@ -6,9 +6,8 @@ public class GameManager
     private Dictionary<SceneState, BaseScene>? scenes;
     public Player? player;
     public Skills? skills;
-    public List<Item>? havingItems;    // 인벤토리 갖고 있는 아이템
-    public List<Item>? purchasedItems;    // 상점에서 이미 판매한 아이템들
-    public Inventory? inventory;
+    public List<Item>? havingItems;
+    public List<Item>? purchasedItems;
     public QuestController? questController;
     private bool hasData;
 
@@ -26,9 +25,11 @@ public class GameManager
             instance = this;
         }
         skills = new();
-        havingItems = new();
+        havingItems = new()
+        {
+            
+        };
         purchasedItems= new();
-        inventory = new();
         questController = new();
 
 
@@ -59,6 +60,8 @@ public class GameManager
         scenes.Add(SceneState.Selling, new SellingScene());
         scenes.Add(SceneState.Inventory, new Inventory());
         scenes.Add(SceneState.Fitting, new FittingScene());
+        scenes.Add(SceneState.Eating, new EatingScene());
+        scenes.Add(SceneState.SaveGame, new SaveScene());
         scenes.Add(SceneState.Quest, new QuestScene());
     }
 

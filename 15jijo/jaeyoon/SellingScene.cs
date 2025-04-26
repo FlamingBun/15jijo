@@ -3,31 +3,64 @@ public class SellingScene : BaseScene
     public override SceneState SceneState { get; protected set; } = SceneState.Selling;
 
     private Player? player;
+    private Player Player
+    {
+        get
+        {
+            if (player == null)
+            {
+                player = GameManager.instance.player;
+            }
+            return player;
+        }
+    }
     private List<Item>? items;
+    private List<Item>? Items
+    {
+        get
+        {
+            if (items == null)
+            {
+                items = GameManager.instance.havingItems;
+            }
+            return items;
+        }
+    }
+    private List<EquipmentItem>? equippedItems;
+    private List<EquipmentItem>? EquippedItems
+    {
+        get
+        {
+            if (items == null)
+            {
+                equippedItems = GameManager.instance.player.equippedItems;
+            }
+            return equippedItems;
+        }
+    }
+    private List<Item>? equipmentItems;
+    private List<Item>? consumableItems;
 
     private void SellItem(Item item)
     {
-        if (player != null &&
-            player.equippedItems != null &&
-            player.equippedItems.Contains(item))
+        if (Player.equippedItems.Contains(item))
         {
-            player.OffEquip((EquipmentItem)item);
+            Player.OffEquip((EquipmentItem)item);
         }
-        if (player != null && items != null)
+
+        Player.UpdateGold((int)(item.ItemPrice * 0.85f));
+        Items.Remove(item);
+        if (item.ItemType == ItemType.Equipment)
         {
-            player.UpdateGold((int)(item.ItemPrice * 0.85f));
-            items.Remove(item);
+            GameManager.instance.purchasedItems.Remove(item);
         }
     }
 
     public override SceneState InputHandle()
     {
-        if (GameManager.instance != null &&
-            GameManager.instance.inventory != null)
-        {
-            player = GameManager.instance.player;
-            items = GameManager.instance.havingItems;
-        }
+        equipmentItems = Items.Where(item => item.ItemType == ItemType.Equipment).ToList();
+        consumableItems = items.Where(item => item.ItemType == ItemType.Consumable).ToList();
+
         while (true)
         {
             DrawScene(SceneState);
@@ -41,9 +74,16 @@ public class SellingScene : BaseScene
                 }
 
                 int itemIndex = selectedIndex - 1;
-                if (items != null && itemIndex >= 0 && itemIndex < items.Count)
+                if (itemIndex >= 0 && itemIndex < equipmentItems.Count)
                 {
-                    SellItem(items[itemIndex]);
+                    SellItem(equipmentItems[itemIndex]);
+                    Console.WriteLine("아이템을 판매하였습니다.");
+                    Thread.Sleep(1500);
+                    return SceneState.Selling;
+                }
+                else if(itemIndex >= equipmentItems.Count && itemIndex < equipmentItems.Count + consumableItems.Count)
+                {
+                    SellItem(consumableItems[itemIndex - equipmentItems.Count]);
                     Console.WriteLine("아이템을 판매하였습니다.");
                     Thread.Sleep(1500);
                     return SceneState.Selling;

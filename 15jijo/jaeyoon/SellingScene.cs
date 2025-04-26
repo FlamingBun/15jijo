@@ -13,9 +13,13 @@ public class SellingScene : BaseScene
         {
             player.OffEquip((EquipmentItem)item);
         }
-        if (player != null && items != null)
+        if (player != null &&
+            items != null &&
+            GameManager.instance != null &&
+            GameManager.instance.purchasedItems != null)
         {
             player.UpdateGold((int)(item.ItemPrice * 0.85f));
+            GameManager.instance.purchasedItems.Remove(item);
             items.Remove(item);
         }
     }

@@ -36,7 +36,7 @@ public static class ConsoleHelper
                     if (player != null)
                     {
                         Console.WriteLine("휴식하기\n");
-                        Console.WriteLine($"500 Gold 를 내면 체력을 회복할 수 있습니다.(보유 골드 : {player.Gold})\n");
+                        Console.WriteLine($"500 Gold 를 내면 체력을 회복할 수 있습니다.(보유 Gold : {player.Gold})\n");
                         Console.WriteLine("1. 휴식하기");
                         Console.WriteLine("0. 나가기\n");
                         Console.WriteLine("원하시는 행동을 입력해주세요.\n");

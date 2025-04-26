@@ -1,3 +1,6 @@
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
+
 public class FittingScene : BaseScene
 {
     public override SceneState SceneState { get; protected set; } = SceneState.Fitting;
@@ -5,9 +8,9 @@ public class FittingScene : BaseScene
     public override SceneState InputHandle()
     {
         Player? player = GameManager.instance.player;
-        List<EquipmentItem>? equippedItems = GameManager.instance.player.equippedItems;
         List<Item>? items = GameManager.instance.havingItems;
         List<Item>? equipmentItems = items.Where(item => item.ItemType == ItemType.Equipment).ToList();
+        List<EquipmentItem>? equippedItems = GameManager.instance.player.equippedItems;
 
         while (true)
         {

@@ -21,8 +21,11 @@ public class BuyingScene : BaseScene
 
         if (purchasedItems != null && havingItems != null)
         {
-            purchasedItems.Add(item);
             havingItems.Add(item);
+            if (item.ItemType == ItemType.Equipment)
+            {
+                purchasedItems.Add(item);
+            }
         }
 
         return BuyResult.Success;

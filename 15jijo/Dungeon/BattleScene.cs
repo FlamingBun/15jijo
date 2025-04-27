@@ -148,21 +148,15 @@ class BattleScene : BaseScene
         //isClear = (selectedMonsters.MonsterHp <= 0) ? true : false;
 
         // 살아있는 몬스터 먼저 출력
-        foreach (var (monster, index) in selectedMonsters
-            .Select((value, index) => (value, index))
-            .Where(x => x.value.CurrentHp > 0))
+        foreach (var monster in selectedMonsters.Where(m => m.CurrentHp > 0))
         {
-            Console.Write($"{index+1}. ");  // 인덱스 먼저 출력
-            monster.PrintMonster_List();   // 몬스터 출력
+            monster.PrintMonster_List(); // 기본 색상 출력
         }
 
         // 죽은 몬스터 출력
-        foreach (var (monster, index) in selectedMonsters
-            .Select((value, index) => (value, index))
-            .Where(x => x.value.CurrentHp <= 0))
+        foreach (var monster in selectedMonsters.Where(m => m.CurrentHp <= 0))
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.Write($"{index+1}. ");  // 인덱스 먼저 출력
             monster.PrintMonster_Dead();
             Console.ResetColor();
         }

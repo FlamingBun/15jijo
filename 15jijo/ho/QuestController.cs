@@ -53,8 +53,12 @@ namespace _15jijo.ho
         public void UpdateQuest()
         {
             foreach ( var quest in questList)
-            {
+            {   
                 quest.makeQuestCore();
+            }
+            foreach (var quest in playerReceiveQuest)
+            {
+                quest.CompleteQuest(); // 퀘스트 완료 체크
             }
         }
         
@@ -134,6 +138,7 @@ namespace _15jijo.ho
                 GameManager.instance.havingItems.AddRange(quest.Reward_Items); // 플레이어 아이템 획득
                 playerReceiveQuest.Remove(quest); // 퀘스트 삭제
                 GameManager.instance.questController.questList.Remove(quest); // 퀘스트 삭제
+                selectedQuestIndex = -1; // 퀘스트 인덱스 초기화
 
             }
         }

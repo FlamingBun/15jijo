@@ -34,7 +34,6 @@ public class Player : Unit
     public float AdditionalDefensivePower { get; private set; }
     public float TotalDefensivePower => BasicDefensivePower + AdditionalDefensivePower;
     public int Gold { get; private set; }
-    public List<EquipmentItem>? equippedItems { get; private set; }//
     public EquipmentItem? equippedAttackPowerItem { get; private set; }
     public EquipmentItem? equippedDefensivePowerItem { get; private set; }
     public EquipmentItem? equippedHpItem { get; private set; }
@@ -48,7 +47,7 @@ public class Player : Unit
         Level = 1;
         Exp = 0;
         RequiredExp = 10;
-        Gold = 5000;
+        Gold = 50000;
         SkillGrade = 0;
         BasicHp = 100f;
         AdditionalHp = 0f;
@@ -64,7 +63,6 @@ public class Player : Unit
         equippedDefensivePowerItem = null;
         equippedHpItem = null;
         equippedMpItem = null;
-        equippedItems = new();
         AvailableSkills = new();
         switch (Job)
         {
@@ -87,7 +85,7 @@ public class Player : Unit
                 }
                 break;
         }
-        
+
     }
 
     // 저장된 플레이어 데이터가 있을 때 사용
@@ -114,7 +112,6 @@ public class Player : Unit
 
         Gold = json["Gold"]?.ToObject<int>() ?? 0;
 
-        equippedItems = json["equippedItems"]?.ToObject<List<EquipmentItem>>();
         equippedAttackPowerItem = json["equippedAttackPowerItem"]?.ToObject<EquipmentItem>();
         equippedDefensivePowerItem = json["equippedDefensivePowerItem"]?.ToObject<EquipmentItem>();
         equippedHpItem = json["equippedHpItem"]?.ToObject<EquipmentItem>();
@@ -347,60 +344,40 @@ public class Player : Unit
     //    float tempBuffedAttack = CurrentAttackPower * 1.2f;
     //} 버프스킬용
 
-    public void OnEquip(EquipmentItem equipmentItem)
+    public void OnWeapon(EquipmentItem equipmentItem)
     {
-        this.equippedItems.Add(equipmentItem);
-
-        switch (equipmentItem.EquipmentItemType)
+        if (this.equippedAttackPowerItem != null)
         {
-            case EquipmentItemType.Weapon:
-                if (this.equippedAttackPowerItem != null)
-                {
-                    OffEquip(this.equippedAttackPowerItem);
-                }
-                this.equippedAttackPowerItem = equipmentItem;
-                this.UpdateAdditionalAttackPower(equipmentItem.ItemAbility);
-                break;
-            case EquipmentItemType.Armor:
-                if (this.equippedDefensivePowerItem != null)
-                {
-                    OffEquip(this.equippedDefensivePowerItem);
-                }
-                this.equippedDefensivePowerItem = equipmentItem;
-                this.UpdateAdditionalDefensivePower(equipmentItem.ItemAbility);
-                break;
-            default:
-                Console.WriteLine("오류입니다.");
-                break;
+            OffWeapon(this.equippedAttackPowerItem);
         }
+        this.equippedAttackPowerItem = equipmentItem;
+        this.AdditionalAttackPower += equipmentItem.ItemAbility;
     }
-    public void OffEquip(EquipmentItem equipmentItem)
+    public void OnArmor(EquipmentItem equipmentItem)
     {
-        this.equippedItems.Remove(equipmentItem);
-
-        switch (equipmentItem.EquipmentItemType)
+        if (this.equippedDefensivePowerItem != null)
         {
-            case EquipmentItemType.Weapon:
-                equippedAttackPowerItem = null;
-                this.UpdateAdditionalAttackPower(-equipmentItem.ItemAbility);
-                break;
-            case EquipmentItemType.Armor:
-                equippedDefensivePowerItem = null;
-                this.UpdateAdditionalDefensivePower(-equipmentItem.ItemAbility);
-                break;
-            //case ItemValue.Hp:
-            //    HpItem = null;
-            //    player.UpdateAdditionalHp(-item.ItemAbility);
-            //    player.TakeDamage(item.ItemAbility);
-            //    break;
-            //case ItemValue.Mp:
-            //    MpItem = null;
-            //    player.UpdateAdditionalMp(-item.ItemAbility);
-            //    player.ConsumedMp(item.ItemAbility);
-            //    break;
-            default:
-                Console.WriteLine("오류입니다.");
-                break;
+            OffWeapon(this.equippedDefensivePowerItem);
         }
+        this.equippedDefensivePowerItem = equipmentItem;
+        this.AdditionalDefensivePower += equipmentItem.ItemAbility;
+    }
+    public void OffWeapon(EquipmentItem equipmentItem)
+    {
+        this.equippedAttackPowerItem = null;
+        this.AdditionalAttackPower -= equipmentItem.ItemAbility;
+    }
+    public void OffArmor(EquipmentItem equipmentItem)
+    {
+        this.equippedDefensivePowerItem = null;
+        this.AdditionalDefensivePower -= equipmentItem.ItemAbility;
+    }
+    public void SetEquippedAttackPowerItem(EquipmentItem item)
+    {
+        equippedAttackPowerItem = item;
+    }
+    public void SetEquippedDefensivePowerItem(EquipmentItem item)
+    {
+        equippedDefensivePowerItem = item;
     }
 }

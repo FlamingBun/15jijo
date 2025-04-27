@@ -16,4 +16,24 @@ public class ConsumeItem : Item
         ItemDescription = itemDescription;
         ItemPrice = itemPrice;
     }
+    public void Use()
+    {
+        if (this.ItemCount == 1)
+        {
+            GameManager.instance.havingItems.Remove(this);
+        }
+        else
+        {
+            --this.ItemCount;
+        }
+        GameManager.instance.player.Heal((float)this.ItemAbility);
+    }
+    public void Buy()
+    {
+        ++this.ItemCount;
+    }
+    public void Sell()
+    {
+        --this.ItemCount;
+    }
 }

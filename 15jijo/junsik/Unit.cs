@@ -3,7 +3,7 @@ public abstract class Unit
     public abstract string? Name { get; protected set; }
     public abstract float CurrentHp { get; protected set; }
     public abstract float CurrentMp { get; protected set; }
-    public abstract float CurrentAttackPower { get; }
+    public abstract float CurrentAttackPower { get; set; }
     public abstract float CurrentDefensivePower { get; }
     public abstract List<Skill>? AvailableSkills { get; protected set; }
 

@@ -7,7 +7,7 @@ public class Player : Unit
     public override string? Name { get; protected set; }
     public override float CurrentHp { get; protected set; }
     public override float CurrentMp { get; protected set; }
-    public override float CurrentAttackPower => TotalAttackPower;
+    public override float CurrentAttackPower { get { return TotalAttackPower; } set { } }
     public override float CurrentDefensivePower => TotalDefensivePower;
     public override List<Skill>? AvailableSkills { get; protected set; }
     public override void KillUnit()

@@ -414,6 +414,28 @@ public static class ConsoleHelper
         _inputNumber = inputNumber;
         return true;
     }
+
+    public static bool CheckUserInput(string? _input, int _selectionCount, ref int _inputNumber, bool isFight)
+    {
+        if (!int.TryParse(_input, out int inputNumber) || inputNumber.ToString() != _input)
+        {
+
+            Thread.Sleep(1500);
+            return false;
+        }
+
+        // 입력한 번호가 선택지 개수보다 크거나 0보다 작으면 false
+        if (_selectionCount < inputNumber || inputNumber < 0)
+        {
+
+            Thread.Sleep(1500);
+            return false;
+        }
+
+        _inputNumber = inputNumber;
+        return true;
+    }
+
     public static string GetItemTypeString(Item item)
     {
         string abillityType = "";

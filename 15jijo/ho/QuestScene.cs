@@ -15,34 +15,88 @@ namespace _15jijo.ho
 
         public override SceneState InputHandle()
         {
-            DrawScene(SceneState);
+            qc.ConnectPlayer(GameManager.instance.player);
+            qc.UpdateQuest();
             selectionCount = qc.GetQuestCount() + 1;
-            string? input = Console.ReadLine();
             int inputNumber = -1;
-            bool isValidInput = ConsoleHelper.CheckUserInput(input, selectionCount, ref inputNumber);
-            if (!isValidInput)
+            if (qc.selectedQuestIndex == -1)
             {
-                return SceneState;
-            }
-            else if (inputNumber == 0) 
-            {
-                return SceneState.Main;
+                DrawScene(SceneState);
+                string? input = Console.ReadLine();
+                bool isValidInput = ConsoleHelper.CheckUserInput(input, selectionCount, ref inputNumber);
+                if (!isValidInput)
+                {
+                    return SceneState;
+                }
+                else if (inputNumber == 0)
+                {
+                    return SceneState.Main;
 
 
+                }
+                else
+                {
+                    Console.Clear();
+                    if (qc.selectedQuestIndex == -1)
+                    {
+                        qc.selectedQuestIndex = inputNumber - 1; // 퀘스트 인덱스 설정
+                    }
+
+                    qc.DisplayQuest(qc.selectedQuestIndex); // 퀘스트 출력
+
+                    input = Console.ReadLine();
+                    isValidInput = ConsoleHelper.CheckUserInput(input, 1, ref inputNumber);
+
+                    if (!isValidInput)
+                    {
+                        return SceneState;
+                    }
+                    else if (inputNumber == 0) // 나가기
+                    {
+
+                        qc.selectedQuestIndex = -1;
+                        return SceneState;
+                    }
+                    else // 퀘스트 수락
+                    {
+                        Console.Clear();
+                        qc.DisplayQuest(qc.selectedQuestIndex); // 퀘스트 출력
+                        qc.ReceiveQuest(qc.selectedQuestIndex); // 퀘스트 수락
+                        return SceneState; // 퀘스트 화면으로 돌아가기
+                    }
+
+                }
             }
             else
-            {
+            {   Console.Clear();
+                qc.DisplayQuest(qc.selectedQuestIndex); // 퀘스트 출력
+                string? input = Console.ReadLine();
+                bool isValidInput = ConsoleHelper.CheckUserInput(input, 1, ref inputNumber);
+
+                if (!isValidInput)
+                {
+                    return SceneState;
+                }
+                else if (inputNumber == 0) // 나가기
+                {
+
+                    qc.selectedQuestIndex = -1;
+                    return SceneState;
+                }
+                else // 퀘스트 수락
+                {
+                    Console.Clear();
+                    qc.DisplayQuest(qc.selectedQuestIndex); // 퀘스트 출력
+                    qc.ReceiveQuest(qc.selectedQuestIndex); // 퀘스트 수락
+                    return SceneState; // 퀘스트 화면으로 돌아가기
+                }
 
 
-
-
-
-                return SceneState;
             }
 
 
 
-                
+
         }
     }
 }

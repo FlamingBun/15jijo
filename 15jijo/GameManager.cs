@@ -36,7 +36,6 @@ public class GameManager
         // 만약 데이터가 없으면 false -> 캐릭터 생성씬
         hasData = DataManager.instance.LoadPlayerData();
         InitAllScenes();
-
         if (hasData)
         {
             currentSceneState = SceneState.Main;
@@ -45,6 +44,7 @@ public class GameManager
         {
             currentSceneState = SceneState.MakeCharacter;
         }
+
     }
 
     private void InitAllScenes() 

@@ -322,10 +322,10 @@ public static class ConsoleHelper
             case SceneState.Quest:
                 Console.WriteLine("Quest!!\n");
                 GameManager.instance.questController.DisplayQuestListName();
-                
                 Console.WriteLine("\n0. 나가기");
                 Console.Write("\n원하시는 행동을 입력해주세요.\n>>");
                 break;
+    
         }
     }
 

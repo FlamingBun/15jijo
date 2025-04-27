@@ -12,9 +12,9 @@ namespace _15jijo.ho
     {
         protected string? QuestName { get; set; } // 퀘스트 이름
         protected string? QuestDesc { get; set; } // 퀘스트 설명
-        protected int Reward_Gold { get; set; } // 보상 골드
-        protected int Reward_Exp { get; set; } // 보상 경험치
-        protected List<Item>? Reward_Items { get; set; } // 보상 아이템
+        public int Reward_Gold { get; protected set; } // 보상 골드
+        public int Reward_Exp { get; protected set; } // 보상 경험치
+        public List<Item>? Reward_Items { get; protected set; } // 보상 아이템
         public bool IsClear { get; set; } = false;
         public bool IsReceive { get; set; } = false;
         protected string? questCore;
@@ -29,6 +29,8 @@ namespace _15jijo.ho
             this.Reward_Gold = gold;
             this.Reward_Exp = exp;
             this.Reward_Items = items;
+            QuestDesc = QuestDesc.Replace(",", "\r\n");
+            
         }
 
         public virtual void ShowQuestName()
@@ -63,7 +65,17 @@ namespace _15jijo.ho
             {
                 foreach(Item item in Reward_Items)
                 {
-                    Print.print($"{item.ItemName} x 개수지정필요");
+                    if (item.ItemType == ItemType.Consumable)
+                    {
+                        ConsumeItem ci = (ConsumeItem)item;
+                        Print.print($"{item.ItemName} x {ci.ItemCount}");
+                    }
+                    else
+                    {
+                        Print.print($"{item.ItemName} x 1 ");
+
+                    }
+                        
                 }
                 //만약 보상 아이템이 존재하면 출력!
             }
@@ -84,12 +96,22 @@ namespace _15jijo.ho
             Reward_Exp = (int)(Reward_Exp * bonusReward); // 추가보상 경험치, 골드
             Reward_Gold = (int)(Reward_Gold * bonusReward);
             makeQuestCore();
+            
 
         }
         public override void makeQuestCore()
         {
             questCore = $"-{targetMonster.Name} {goalCount}마리 처치 ({killCount}/{goalCount})\n";
 
+        }
+
+        public void CheckTargetMonster(string name)
+        {
+            if (name == targetMonster.Name)
+            {
+                killCount++;
+                CompleteQuest();
+            }
         }
 
 
@@ -99,6 +121,12 @@ namespace _15jijo.ho
             {
                 IsClear = true;
             }
+        }
+
+        public override void ShowQuest()
+        {
+            
+            base.ShowQuest();
         }
 
 
@@ -155,14 +183,16 @@ namespace _15jijo.ho
             float bonusReward = 1f + goalStatValue * 0.01f; // 만약 많이 잡는 퀘스트가 걸리면 추가보상
             Reward_Exp = (int)(Reward_Exp * bonusReward); // 추가보상 경험치, 골드
             Reward_Gold = (int)(Reward_Gold * bonusReward);
-            //GetTargetStatValue();
+            makeQuestCore();    // 퀘스트 핵심 정보 요약문 생성
+            
 
         }
 
 
         public override void makeQuestCore()
         {
-            questCore = $"-{statType}을 {goalStatValue}까지 올리기! {currentStatValue}/{goalStatValue})\n";
+            GetTargetStatValue();
+            questCore = $"-{statType}을 {goalStatValue}까지 올리기! ({currentStatValue}/{goalStatValue})\n";
         }
 
         public override void CompleteQuest()
@@ -175,6 +205,10 @@ namespace _15jijo.ho
 
         public void GetTargetStatValue()
         {
+            if (player != null)
+            {
+
+
             if (statType == questRequireStatName.공격력)
             {
                 currentStatValue = player.TotalAttackPower;
@@ -187,6 +221,14 @@ namespace _15jijo.ho
             {
                 currentStatValue = player.Level;
             }
+
+
+            }
+            else
+            {
+                return;
+            }
+
         }
 
         public void SetGoalStatValue()
@@ -200,6 +242,12 @@ namespace _15jijo.ho
             {
                 goalStatValue += player.Level * 3;
             }
+        }
+
+        public override void ShowQuest()
+        {
+            makeQuestCore();
+            base.ShowQuest();
         }
     }
 

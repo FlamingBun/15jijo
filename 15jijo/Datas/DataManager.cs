@@ -111,7 +111,7 @@ public class DataManager
 
         );
 
-        var playerStatQuest = await LoadWithConsoleLoading("KillMonsterQuest", "A1:G", row => new PlayerStatQuest(
+        var playerStatQuest = await LoadWithConsoleLoading("PlayerStatQuest", "A1:G", row => new PlayerStatQuest(
             row[0]?.ToString() ?? "",
             row[1]?.ToString() ?? "",
             int.Parse(row[2]?.ToString() ?? "1"),

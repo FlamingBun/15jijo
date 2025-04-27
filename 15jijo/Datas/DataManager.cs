@@ -9,7 +9,7 @@ public class DataManager
     private bool isLoading = true;
     public bool isDataLoad = false;
     public bool isDataLoadFail = false;
-    
+
     public Datas<Monster> monsterDatas;
     public Datas<Item> itemDatas;
     public Datas<KillMonsterQuest> monsterQuest;
@@ -34,7 +34,7 @@ public class DataManager
         LoadAllData();
     }
 
-    public bool CheckLoadData() 
+    public bool CheckLoadData()
     {
         while (!isDataLoad && !isDataLoadFail)
         {
@@ -56,7 +56,7 @@ public class DataManager
         return false;
     }
 
-    private async void LoadAllData() 
+    private async void LoadAllData()
     {
         var loadingTask = ShowConsoleLoading();
 
@@ -119,7 +119,7 @@ public class DataManager
             itemDatas.GetData(row[4]?.ToString() ?? "0"),
             (questRequireStatName)int.Parse(row[5]?.ToString() ?? "1"),
             int.Parse(row[6]?.ToString() ?? "1")
-           
+
             )
 
 
@@ -157,7 +157,7 @@ public class DataManager
 
     private async Task<Datas<T>> LoadWithConsoleLoading<T>(string sheetName, string range, Func<JToken, T> parseFunc)
     {
-        
+
         var dataTask = GetDataFromGoogleSheet<T>(sheetName, range, parseFunc);
 
         var data = await dataTask;
@@ -165,7 +165,7 @@ public class DataManager
         return data;
     }
 
-    
+
     private async Task ShowConsoleLoading()
     {
         int dotCount = 0;
@@ -179,9 +179,9 @@ public class DataManager
                 Console.Write(".");
             }
 
-            if (++dotCount > 3) 
+            if (++dotCount > 3)
             {
-                dotCount=0;
+                dotCount = 0;
             }
 
             await Task.Delay(500);
@@ -268,33 +268,45 @@ public class DataManager
                     items.Add(item.ToObject<ConsumeItem>());
                 }
             }
-
             GameManager.instance.havingItems = items;
+            GameManager.instance.purchasedItems = GameManager.instance.havingItems.Where(item => item.ItemType == ItemType.Equipment).ToList();
+            if (GameManager.instance.player.equippedAttackPowerItem != null &&
+                GameManager.instance.havingItems.Any(item => item.ItemName == GameManager.instance.player.equippedAttackPowerItem.ItemName))
+            {
+                GameManager.instance.player.SetEquippedAttackPowerItem(
+                    (EquipmentItem)GameManager.instance.havingItems.First(item => item.ItemName == GameManager.instance.player.equippedAttackPowerItem.ItemName)
+                );
+            }
+            if (GameManager.instance.player.equippedDefensivePowerItem != null &&
+                GameManager.instance.havingItems.Any(item => item.ItemName == GameManager.instance.player.equippedDefensivePowerItem.ItemName))
+            {
+                GameManager.instance.player.SetEquippedDefensivePowerItem(
+                    (EquipmentItem)GameManager.instance.havingItems.First(item => item.ItemName == GameManager.instance.player.equippedDefensivePowerItem.ItemName)
+                );
+            }
         }
 
         var purchasedInventoryToken = LoadJsonFromFile("purchasedInventoryInfo.txt");
 
         // C#의 패턴 매칭으로
         // inventoryToken이 JArray 타입인지 검사 -> 타입이 맞으면 inventoryArray로 캐스팅해 준다.
-        if (purchasedInventoryToken is JArray purchasedInventoryArray)
-        {
-            List<Item> items = new List<Item>();
+        //if (purchasedInventoryToken is JArray purchasedInventoryArray)
+        //{
+        //    List<Item> items = new List<Item>();
 
-            foreach (var item in purchasedInventoryArray)
-            {
-                if (item["EquipmentItemType"] != null)
-                {
-                    items.Add(item.ToObject<EquipmentItem>());
-                }
-                else if (item["ConsumeItemType"] != null)
-                {
-                    items.Add(item.ToObject<ConsumeItem>());
-                }
-            }
-
-            GameManager.instance.purchasedItems = items;
-        }
-
+        //    foreach (var item in purchasedInventoryArray)
+        //    {
+        //        if (item["EquipmentItemType"] != null)
+        //        {
+        //            items.Add(item.ToObject<EquipmentItem>());
+        //        }
+        //        else if (item["ConsumeItemType"] != null)
+        //        {
+        //            items.Add(item.ToObject<ConsumeItem>());
+        //        }
+        //    }
+        //    GameManager.instance.purchasedItems = items;
+        //}
         return true;
     }
 
@@ -323,7 +335,7 @@ public class DataManager
             }
 
             // 갖고있는 아이템 목록 저장
-            if (GameManager.instance.havingItems.Count > 0)
+            if (GameManager.instance.havingItems.Count >= 0)
             {
                 if (SaveJsonToFile("inventoryInfo.txt", GameManager.instance.havingItems))
                 {
@@ -332,7 +344,7 @@ public class DataManager
             }
 
             // 구매한 아이템 목록 저장
-            if (GameManager.instance.purchasedItems.Count > 0)
+            if (GameManager.instance.purchasedItems.Count >= 0)
             {
                 if (SaveJsonToFile("purchasedInventoryInfo.txt", GameManager.instance.purchasedItems))
                 {
@@ -369,4 +381,3 @@ public class DataManager
 
     }
 }
-

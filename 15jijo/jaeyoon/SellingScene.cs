@@ -26,47 +26,48 @@ public class SellingScene : BaseScene
             return items;
         }
     }
-    private List<EquipmentItem>? equippedItems;
-    private List<EquipmentItem>? EquippedItems
-    {
-        get
-        {
-            if (items == null)
-            {
-                equippedItems = GameManager.instance.player.equippedItems;
-            }
-            return equippedItems;
-        }
-    }
     private List<Item>? equipmentItems;
     private List<Item>? consumableItems;
-
-    private void SellItem(Item item)
+    private void SellEquipmentItem(EquipmentItem item)
     {
-        if (item.ItemType == ItemType.Equipment)
+        switch (item.EquipmentItemType)
         {
-            if (Player.equippedAttackPowerItem != null && Player.equippedAttackPowerItem.ItemName == item.ItemName) 
-            {
-                Player.OffEquip((EquipmentItem)item);
-            }
-            if (Player.equippedDefensivePowerItem!=null && Player.equippedDefensivePowerItem.ItemName == item.ItemName)
-            {
-                Player.OffEquip((EquipmentItem)item);
-            }
+            case EquipmentItemType.Weapon:
+                if (Player.equippedAttackPowerItem != null && Player.equippedAttackPowerItem.ItemName == item.ItemName)
+                {
+                    Player.OffWeapon(item);
+                }
+                break;
+            case EquipmentItemType.Armor:
+                if (Player.equippedDefensivePowerItem != null && Player.equippedDefensivePowerItem.ItemName == item.ItemName)
+                {
+                    Player.OffArmor(item);
+                }
+                break;
+            default:
+                Console.WriteLine("오류입니다.");
+                break;
         }
-
         Player.UpdateGold((int)(item.ItemPrice * 0.85f));
         Items.Remove(item);
-        if (item.ItemType == ItemType.Equipment)
+        GameManager.instance.purchasedItems.Remove(item);
+    }
+    private void SellConsumeItem(ConsumeItem item)
+    {
+        Player.UpdateGold((int)(item.ItemPrice * 0.85f));
+        if (item.ItemCount == 1)
         {
-            GameManager.instance.purchasedItems.Remove(item);
+            Items.Remove(item);
+        }
+        else
+        {
+            item.Sell();
         }
     }
-
     public override SceneState InputHandle()
     {
         equipmentItems = Items.Where(item => item.ItemType == ItemType.Equipment).ToList();
-        consumableItems = items.Where(item => item.ItemType == ItemType.Consumable).ToList();
+        consumableItems = Items.Where(item => item.ItemType == ItemType.Consumable).ToList();
 
         while (true)
         {
@@ -83,14 +84,14 @@ public class SellingScene : BaseScene
                 int itemIndex = selectedIndex - 1;
                 if (itemIndex >= 0 && itemIndex < equipmentItems.Count)
                 {
-                    SellItem(equipmentItems[itemIndex]);
+                    SellEquipmentItem((EquipmentItem)equipmentItems[itemIndex]);
                     Console.WriteLine("아이템을 판매하였습니다.");
                     Thread.Sleep(1500);
                     return SceneState.Selling;
                 }
-                else if(itemIndex >= equipmentItems.Count && itemIndex < equipmentItems.Count + consumableItems.Count)
+                else if (itemIndex >= equipmentItems.Count && itemIndex < equipmentItems.Count + consumableItems.Count)
                 {
-                    SellItem(consumableItems[itemIndex - equipmentItems.Count]);
+                    SellConsumeItem((ConsumeItem)consumableItems[itemIndex - equipmentItems.Count]);
                     Console.WriteLine("아이템을 판매하였습니다.");
                     Thread.Sleep(1500);
                     return SceneState.Selling;

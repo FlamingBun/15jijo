@@ -10,7 +10,6 @@ public class FittingScene : BaseScene
         Player? player = GameManager.instance.player;
         List<Item>? items = GameManager.instance.havingItems;
         List<Item>? equipmentItems = items.Where(item => item.ItemType == ItemType.Equipment).ToList();
-        List<EquipmentItem>? equippedItems = GameManager.instance.player.equippedItems;
 
         while (true)
         {
@@ -27,21 +26,42 @@ public class FittingScene : BaseScene
                 int itemIndex = selectedIndex - 1;
                 if (itemIndex >= 0 && itemIndex < equipmentItems.Count)
                 {
-                    Item selectedItem = equipmentItems[itemIndex];
-
-                    if (equippedItems.Contains(selectedItem))
+                    EquipmentItem selectedItem = (EquipmentItem)equipmentItems[itemIndex];
+                    switch(selectedItem.EquipmentItemType)
                     {
-                        player.OffEquip((EquipmentItem)selectedItem);
-                        Console.WriteLine("장비를 해제 하였습니다.");
-                        Thread.Sleep(1500);
-                        return SceneState.Fitting;
-                    }
-                    else
-                    {
-                        player.OnEquip((EquipmentItem)selectedItem);
-                        Console.WriteLine("장비를 장착 하였습니다.");
-                        Thread.Sleep(1500);
-                        return SceneState.Fitting;
+                        case EquipmentItemType.Weapon:
+                            if (player.equippedAttackPowerItem == selectedItem)
+                            {
+                                player.OffWeapon(selectedItem);
+                                Console.WriteLine("장비를 해제 하였습니다.");
+                                Thread.Sleep(1500);
+                                return SceneState.Fitting;
+                            }
+                            else
+                            {
+                                player.OnWeapon(selectedItem);
+                                Console.WriteLine("장비를 장착 하였습니다.");
+                                Thread.Sleep(1500);
+                                return SceneState.Fitting;
+                            }
+                        case EquipmentItemType.Armor:
+                            if (player.equippedDefensivePowerItem == selectedItem)
+                            {
+                                player.OffArmor(selectedItem);
+                                Console.WriteLine("장비를 해제 하였습니다.");
+                                Thread.Sleep(1500);
+                                return SceneState.Fitting;
+                            }
+                            else
+                            {
+                                player.OnArmor(selectedItem);
+                                Console.WriteLine("장비를 장착 하였습니다.");
+                                Thread.Sleep(1500);
+                                return SceneState.Fitting;
+                            }
+                        default:
+                            Console.WriteLine("오류입니다.");
+                            break;
                     }
                 }
                 else

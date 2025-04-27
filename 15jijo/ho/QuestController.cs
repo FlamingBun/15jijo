@@ -79,15 +79,15 @@ namespace _15jijo.ho
             quest.ShowQuest();
             if (quest.IsClear)
             {
-                Console.Write("1. 퀘스트 완료\n0.나가기\n원하시는 행동을 입력해주세요.>>");
+                Console.Write("1. 퀘스트 완료\n0.나가기\n\n원하시는 행동을 입력해주세요.\n>>");
             }// 퀘스트가 클리어가 아니라면
             else if (quest.IsReceive) // 퀘스트가 진행 중이라면
             {
-                Console.Write("0. 나가기\n원하시는 행동을 입력해주세요.>>");
+                Console.Write("0. 나가기\n\n원하시는 행동을 입력해주세요.\n>>");
             }
             else// 퀘스트를 진행 중이지 않다면
             {
-                Console.Write("1. 퀘스트 수락\n0. 나가기\n원하시는 행동을 입력해주세요.>>");
+                Console.Write("1. 퀘스트 수락\n0. 나가기\n\n원하시는 행동을 입력해주세요.\n>>");
             }
         }
 

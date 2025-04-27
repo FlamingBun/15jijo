@@ -1,3 +1,5 @@
+using System.Threading;
+
 class BattleScene : BaseScene
 {
     public override SceneState SceneState { get; protected set; } = SceneState.Battle;
@@ -213,7 +215,7 @@ class BattleScene : BaseScene
                     {
                         var target = aliveMonsters[selectedMonstersNum - 1];
                         System.Threading.Thread.Sleep(300);
-                        FightLog($"{target.Name}{target.MonsterLevel}을(를) 공격합니다!");
+                        FightLog($"[LV.{target.MonsterLevel} {target.Name}]을(를) 공격합니다!");
                         System.Threading.Thread.Sleep(300);
                         FightLog($"{target.Name}{target.MonsterLevel}의 HP {player.CurrentAttackPower} 감소합니다.");
                         System.Threading.Thread.Sleep(300);

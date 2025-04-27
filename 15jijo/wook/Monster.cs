@@ -52,6 +52,7 @@ public class Monster : Unit
         if (CurrentHp <= 0)
         {
             CurrentHp = 0;
+            GameManager.instance.questController.FindMonsterObjectInPlayerQuest(Name);
             isDead = true;
         }
     }

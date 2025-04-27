@@ -9,16 +9,17 @@ public class BuyingScene : BaseScene
 
     private BuyResult BuyItem(Item item)
     {
-        if (!player.SpendGold(item.ItemPrice))
-        {
-            return BuyResult.NotEnoughGold;
-        }
         if (item.ItemType == ItemType.Equipment)
         {
             if (purchasedItems.Any(p => p.ItemName == item.ItemName))
             {
                 return BuyResult.AlreadyPurchased;
             }
+            if (!player.SpendGold(item.ItemPrice))
+            {
+                return BuyResult.NotEnoughGold;
+            }
+
             havingItems.Add(item);
             purchasedItems.Add(item);
             return BuyResult.Success;
@@ -26,6 +27,12 @@ public class BuyingScene : BaseScene
         else
         {
             ConsumeItem consumeItem = (ConsumeItem)item;
+
+            if (!player.SpendGold(item.ItemPrice))
+            {   
+                return BuyResult.NotEnoughGold;
+            }
+
             if (havingItems.Any(h => h.ItemName == item.ItemName))
             {
                 consumeItem.Buy();

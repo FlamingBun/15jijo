@@ -22,7 +22,7 @@ namespace _15jijo.ho
         public abstract void CompleteQuest(); // 퀘스트 유형 별 퀘스트 완료 로직 구현을 오버라이딩 할 추상 메서드
         public abstract void makeQuestCore(); // 퀘스트 유형 별 퀘스트 핵심 출력 로직 구현을 오버라이딩 할 추상 메서드 
 
-        public Quest(string name, string desc, int gold, int exp, List<Item> items)
+        public Quest(string name, string desc, int gold, int exp, List<Item> items) // 퀘스트 생성자
         {
             this.QuestName = name;
             this.QuestDesc = desc;
@@ -33,7 +33,7 @@ namespace _15jijo.ho
             
         }
 
-        public virtual void ShowQuestName()
+        public virtual void ShowQuestName() // 퀘스트 이름을 출력하는 메서드. 맨 오른쪽에 진행상황에 따라 다른 문구를 출력.
         {
             string? currentQuestState = "";
             if (IsClear)
@@ -49,17 +49,17 @@ namespace _15jijo.ho
                 // 받은 상태가 아니면 퀘스트 이름 옆에 추가할 string이 있을까?
             }
 
-            Print.print($"{QuestName} {currentQuestState}\n");
+            Console.Write($"{QuestName} {currentQuestState}\n");
         }
 
         
 
-        public virtual void ShowQuest()
+        public virtual void ShowQuest() // 퀘스트의 전체정보를 출력하는 메서드. 퀘스트 이름, 설명, 보상, 퀘스트 핵심 내용 출력
         {
             ShowQuestName();
-            Print.print($"{QuestDesc}\n");
-            Print.print(questCore);// 퀘스트 핵심 내용
-            Print.print("-보상-");
+            Console.WriteLine($"{QuestDesc}\n");
+            Console.WriteLine(questCore);// 퀘스트 핵심 내용
+            Console.WriteLine("-보상-");
             int rewardItemCount = Reward_Items == null ? 0 : Reward_Items.Count;
             if (rewardItemCount > 0)
             {
@@ -68,18 +68,18 @@ namespace _15jijo.ho
                     if (item.ItemType == ItemType.Consumable)
                     {
                         ConsumeItem ci = (ConsumeItem)item;
-                        Print.print($"{item.ItemName} x {ci.ItemCount}");
+                        Console.WriteLine($"{item.ItemName} x {ci.ItemCount}");
                     }
                     else
                     {
-                        Print.print($"{item.ItemName} x 1 ");
+                        Console.WriteLine($"{item.ItemName} x 1 ");
 
                     }
                         
                 }
                 //만약 보상 아이템이 존재하면 출력!
             }
-            Print.print($"{Reward_Gold} G \n{Reward_Exp} exp\n");
+            Console.WriteLine($"{Reward_Gold} G \n{Reward_Exp} exp\n");
         }
     }
 
@@ -99,23 +99,23 @@ namespace _15jijo.ho
             
 
         }
-        public override void makeQuestCore()
+        public override void makeQuestCore()    // 사냥퀘스트의 핵심내용을 string으로 만들어서 questCore에 저장하는 메서드
         {
             questCore = $"-{targetMonster.Name} {goalCount}마리 처치 ({killCount}/{goalCount})\n";
 
         }
 
-        public void CheckTargetMonster(string name)
+        public void CheckTargetMonster(string name) // 해당 몬스터가 죽었을 때, 몬스터의 이름을 받아서 퀘스트의 몬스터와 비교하는 메서드
         {
             if (name == targetMonster.Name)
             {
-                killCount++;
-                CompleteQuest();
+                GetKillCount();
+                
             }
         }
 
 
-        public override void CompleteQuest()
+        public override void CompleteQuest() // 퀘스트 완료 체크 메서드
         {
             if (killCount >= goalCount)
             {
@@ -123,11 +123,6 @@ namespace _15jijo.ho
             }
         }
 
-        public override void ShowQuest()
-        {
-            
-            base.ShowQuest();
-        }
 
 
 
@@ -176,8 +171,7 @@ namespace _15jijo.ho
 
         public PlayerStatQuest(string name, string desc, int gold, int exp, List<Item> items, questRequireStatName type, int goal) : base(name, desc, gold, exp, items)
         {
-            //int randomStat = new Random().Next(0, statType.Length);
-            //targetStatName = statType[randomStat];
+
             this.goalStatValue = goal;
             this.statType = type;
             float bonusReward = 1f + goalStatValue * 0.01f; // 만약 많이 잡는 퀘스트가 걸리면 추가보상
@@ -189,13 +183,13 @@ namespace _15jijo.ho
         }
 
 
-        public override void makeQuestCore()
+        public override void makeQuestCore() // 플레이어 스텟 퀘스트의 핵심내용을 string으로 만들어서 questCore에 저장하는 메서드
         {
-            GetTargetStatValue();
+            GetTargetStatValue(); // 플레이어 객체로부터 해당 퀘스트의 목표 스텟과 일치하는 항목의 스텟값을 받아오는 메서드
             questCore = $"-{statType}을 {goalStatValue}까지 올리기! ({currentStatValue}/{goalStatValue})\n";
         }
 
-        public override void CompleteQuest()
+        public override void CompleteQuest() // 퀘스트 완료 체크 메서드
         {
             if (currentStatValue >= goalStatValue)
             {
@@ -203,7 +197,7 @@ namespace _15jijo.ho
             }
         }
 
-        public void GetTargetStatValue()
+        public void GetTargetStatValue()    // 플레이어 객체로부터 해당 퀘스트의 목표 스텟과 일치하는 항목의 스텟값을 받아오는 메서드
         {
             if (player != null)
             {
@@ -231,37 +225,14 @@ namespace _15jijo.ho
 
         }
 
-        public void SetGoalStatValue()
-        {
-            if(statType== questRequireStatName.레벨)
-            {
-                goalStatValue += (int)player.Level * 1.5f;
 
-            }
-            else
-            {
-                goalStatValue += player.Level * 3;
-            }
-        }
 
-        public override void ShowQuest()
-        {
-            makeQuestCore();
-            base.ShowQuest();
-        }
+
     }
 
 
 
-    class Print
-    {
-        public static void print(string str)
-        {
 
-            Console.WriteLine(str);
-
-        }
-    }
 
 
 }

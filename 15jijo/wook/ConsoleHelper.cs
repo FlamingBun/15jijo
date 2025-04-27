@@ -1,11 +1,13 @@
 using System.Buffers.Text;
 using System.Numerics;
 using System.Reflection.Emit;
+using System.Text;
 
 public static class ConsoleHelper
 {
     public static void ShowScene(SceneState _sceneState)
     {
+        int clearedLevel = GameManager.instance.dungeonController.clearedLevel;
         switch (_sceneState)
         {
             case SceneState.MakeCharacter:
@@ -14,8 +16,6 @@ public static class ConsoleHelper
                 Console.Write(">>");
                 break;
             case SceneState.Main:
-                // TODO: 현재 던전 레벨 받아오기
-                int dungeonClearLevel = 1;
                 Console.WriteLine("스파르타 던전에 오신 여러분 환영합니다.");
                 Console.WriteLine("이제 전투를 시작할 수 있습니다.\n");
                 Console.WriteLine("1. 상태보기");
@@ -23,7 +23,7 @@ public static class ConsoleHelper
                 Console.WriteLine("3. 상점");
                 Console.WriteLine("4. 휴식하기");
                 Console.WriteLine("5. 퀘스트");
-                Console.WriteLine($"6. 던전 입장(현재 진행: {dungeonClearLevel}층)");
+                Console.WriteLine($"6. 던전 입장(현재 진행: {clearedLevel}층)");
                 Console.WriteLine("7. 게임 저장하기");
                 Console.WriteLine("8. 게임 종료하기\n");
                 Console.WriteLine("원하시는 행동을 입력해주세요.\n");
@@ -55,6 +55,47 @@ public static class ConsoleHelper
                 break;
             case SceneState.DungeonEntrance:
                 Console.WriteLine("던전입구에 입장하셨습니다.");
+                Console.WriteLine($"현재까지 클리어한 층: {clearedLevel}층");
+                for (int i = 1; i <= 10; i++)
+                {
+                    Console.OutputEncoding = Encoding.UTF8;
+                    if (i <= clearedLevel + 1)
+                    {
+                        Console.WriteLine($"▶ {i}층");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"ꗃ {i}층");
+                    }
+                }
+                break;
+            case SceneState.Battle:
+                //TextReaderingHint = TextReaderingHint.AntiAlias;
+                int selectedLevel = GameManager.instance.dungeonController.selectedLevel;
+                Console.SetCursorPosition(0, 7);
+                Console.OutputEncoding = Encoding.UTF8;
+                Console.WriteLine("             ███████╗██╗██████╗ ███████╗████████╗    ███████╗██╗      ██████╗  ██████╗ ██████╗ ");
+                Console.WriteLine("             ██╔════╝██║██╔══██╗██╔════╝╚══██╔══╝    ██╔════╝██║     ██╔═══██╗██╔═══██╗██╔══██╗");
+                Console.WriteLine("             █████╗  ██║██████╔╝███████╗   ██║       █████╗  ██║     ██║   ██║██║   ██║██████╔╝");
+                Console.WriteLine("             ██╔══╝  ██║██╔══██╗╚════██║   ██║       ██╔══╝  ██║     ██║   ██║██║   ██║██╔══██╗");
+                Console.WriteLine("             ██║     ██║██║  ██║███████║   ██║       ██║     ███████╗╚██████╔╝╚██████╔╝██║  ██║");
+                Console.WriteLine("             ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝       ╚═╝     ╚══════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝");
+                Console.SetCursorPosition(0, 18);
+                Console.WriteLine("========================================================================================================================");
+                Console.WriteLine($"던전 {selectedLevel}층에 진입했습니다. ");
+                System.Threading.Thread.Sleep(1500);
+                Console.SetCursorPosition(0, 0);
+                Console.SetCursorPosition(0, 7);
+                Console.WriteLine("     ██████╗  █████╗ ████████╗████████╗██╗     ███████╗    ███████╗████████╗ █████╗ ██████╗ ████████╗██╗██╗██╗██╗██╗  ");
+                Console.WriteLine("     ██╔══██╗██╔══██╗╚══██╔══╝╚══██╔══╝██║     ██╔════╝    ██╔════╝╚══██╔══╝██╔══██╗██╔══██╗╚══██╔══╝██║██║██║██║██║  ");
+                Console.WriteLine("     ██████╔╝███████║   ██║      ██║   ██║     █████╗      ███████╗   ██║   ███████║██████╔╝   ██║   ██║██║██║██║██║  ");
+                Console.WriteLine("     ██╔══██╗██╔══██║   ██║      ██║   ██║     ██╔══╝      ╚════██║   ██║   ██╔══██║██╔══██╗   ██║   ╚═╝╚═╝╚═╝╚═╝╚═╝  ");
+                Console.WriteLine("     ██████╔╝██║  ██║   ██║      ██║   ███████╗███████╗    ███████║   ██║   ██║  ██║██║  ██║   ██║   ██╗██╗██╗██╗██╗  ");
+                Console.WriteLine("     ╚═════╝ ╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚══════╝╚══════╝    ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝╚═╝╚═╝╚═╝╚═╝  ");
+                Console.SetCursorPosition(0, 18);
+                Console.WriteLine("========================================================================================================================");
+                Console.WriteLine($"BATTLE START!!!!                     ");
+                System.Threading.Thread.Sleep(1500);
                 break;
             case SceneState.Status:
                 if (GameManager.instance != null)

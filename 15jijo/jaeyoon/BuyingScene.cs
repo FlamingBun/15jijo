@@ -9,26 +9,33 @@ public class BuyingScene : BaseScene
 
     private BuyResult BuyItem(Item item)
     {
-        if (purchasedItems != null && purchasedItems.Contains(item))
-        {
-            return BuyResult.AlreadyPurchased;
-        }
-
-        if (player != null && !player.SpendGold(item.ItemPrice))
+        if (!player.SpendGold(item.ItemPrice))
         {
             return BuyResult.NotEnoughGold;
         }
-
-        if (purchasedItems != null && havingItems != null)
+        if (item.ItemType == ItemType.Equipment)
         {
-            havingItems.Add(item);
-            if (item.ItemType == ItemType.Equipment)
+            if (purchasedItems.Any(p => p.ItemName == item.ItemName))
             {
-                purchasedItems.Add(item);
+                return BuyResult.AlreadyPurchased;
             }
+            havingItems.Add(item);
+            purchasedItems.Add(item);
+            return BuyResult.Success;
         }
-
-        return BuyResult.Success;
+        else
+        {
+            ConsumeItem consumeItem = (ConsumeItem)item;
+            if (havingItems.Any(h => h.ItemName == item.ItemName))
+            {
+                consumeItem.Buy();
+            }
+            else
+            {
+                havingItems.Add(item);
+            }
+            return BuyResult.Success;
+        }
     }
     public override SceneState InputHandle()
     {

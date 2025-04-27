@@ -25,8 +25,8 @@ public class EatingScene : BaseScene
                 int itemIndex = selectedIndex - 1;
                 if (itemIndex >= 0 && itemIndex < consumableItems.Count)
                 {
-                    Item selectedItem = consumableItems[itemIndex];
-                    //player.UseItem((EquipmentItem)selectedItem);
+                    ConsumeItem selectedItem = (ConsumeItem)consumableItems[itemIndex];
+                    selectedItem.Use();
                     Console.WriteLine("아이템을 사용 하였습니다.");
                     Thread.Sleep(1500);
                     return SceneState.Eating;

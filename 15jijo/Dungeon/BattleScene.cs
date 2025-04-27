@@ -150,7 +150,7 @@ class BattleScene : BaseScene
             .Select((value, index) => (value, index))
             .Where(x => x.value.CurrentHp > 0))
         {
-            Console.Write($"{index}. ");  // 인덱스 먼저 출력
+            Console.Write($"{index+1}. ");  // 인덱스 먼저 출력
             monster.PrintMonster_List();   // 몬스터 출력
         }
 
@@ -160,7 +160,7 @@ class BattleScene : BaseScene
             .Where(x => x.value.CurrentHp <= 0))
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.Write($"{index}. ");  // 인덱스 먼저 출력
+            Console.Write($"{index+1}. ");  // 인덱스 먼저 출력
             monster.PrintMonster_Dead();
             Console.ResetColor();
         }

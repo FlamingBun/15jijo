@@ -35,7 +35,7 @@ public class BuyingScene : BaseScene
         if (GameManager.instance != null)
         {
             player = GameManager.instance.player;
-            itemList = DataManager.instance.itemDatas.GetDatas();
+            itemList = DataManager.instance.itemDatas.GetDatas(13);
             havingItems = GameManager.instance.havingItems;
             purchasedItems = GameManager.instance.purchasedItems;
         }

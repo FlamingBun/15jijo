@@ -9,6 +9,7 @@ public class GameManager
     public List<Item>? havingItems;
     public List<Item>? purchasedItems;
     public QuestController? questController;
+    public DungeonController dungeonController;
     private bool hasData;
 
     private SceneState currentSceneState;
@@ -31,6 +32,7 @@ public class GameManager
         };
         purchasedItems= new();
         questController = new();
+        dungeonController = new DungeonController();
 
 
         // 만약 데이터가 없으면 false -> 캐릭터 생성씬
@@ -63,6 +65,7 @@ public class GameManager
         scenes.Add(SceneState.Eating, new EatingScene());
         scenes.Add(SceneState.SaveGame, new SaveScene());
         scenes.Add(SceneState.Quest, new QuestScene());
+        scenes.Add(SceneState.Battle, new BattleScene());
     }
 
     public void GameStart()

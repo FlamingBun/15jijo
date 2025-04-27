@@ -11,11 +11,11 @@ public enum SceneState
     MakeCharacter,
     Main,
     SelectJob,
-    DungeonFight,
     Fitting,
     Eating,
     Buying,
     Selling,
+    Battle,
 }
 public enum questType
 {

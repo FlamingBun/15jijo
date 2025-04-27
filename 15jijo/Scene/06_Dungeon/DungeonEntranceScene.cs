@@ -10,7 +10,7 @@ class DungeonEntranceScene : BaseScene
         selectionCount = 10;
 
         int inputNumber = -1;
-        Console.Write("입장할 층수를 입력하세요 (1~20): ");
+        Console.Write("입장할 층수를 입력하세요 (1~10): ");
         string input = Console.ReadLine();
         bool isValidInput = ConsoleHelper.CheckUserInput(input, selectionCount, ref inputNumber);
 
@@ -44,7 +44,7 @@ class DungeonEntranceScene : BaseScene
             Thread.Sleep(1500);
             return false;
         }
-        Console.Write($"\n던전 {inputLevel}층으로 진입합니다.");
+        Console.Write($"\n캠프 {inputLevel}층으로 진입합니다.");
         Console.Write(".");
         System.Threading.Thread.Sleep(1000);
         Console.Write(".");

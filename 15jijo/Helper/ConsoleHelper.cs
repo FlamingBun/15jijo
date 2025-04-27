@@ -23,7 +23,7 @@ public static class ConsoleHelper
                 Console.WriteLine("3. 상점");
                 Console.WriteLine("4. 휴식하기");
                 Console.WriteLine("5. 퀘스트");
-                Console.WriteLine($"6. 던전 입장(현재 진행: {clearedLevel}층)");
+                Console.WriteLine($"6. 캠프 입장(현재 진행: {clearedLevel}층)");
                 Console.WriteLine("7. 게임 저장하기");
                 Console.WriteLine("8. 게임 종료하기\n");
                 Console.WriteLine("원하시는 행동을 입력해주세요.\n");
@@ -47,14 +47,14 @@ public static class ConsoleHelper
             case SceneState.SelectJob:
                 Console.WriteLine("스파르타 던전에 오신 여러분 환영합니다.\n");
                 Console.WriteLine("원하시는 직업을 선택해주세요.\n");
-                Console.WriteLine("1. 전사");
-                Console.WriteLine("2. 궁수");
-                Console.WriteLine("3. 법사\n");
+                Console.WriteLine("1. 나영웅 매니저님");
+                Console.WriteLine("2. 박찬우 매니저님");
+                Console.WriteLine("3. 한효승 매니저님\n");
                 Console.WriteLine("원하시는 행동을 입력해주세요.\n");
                 Console.Write(">>");
                 break;
             case SceneState.DungeonEntrance:
-                Console.WriteLine("던전입구에 입장하셨습니다.");
+                Console.WriteLine("캠프 입구에 입장하셨습니다.");
                 Console.WriteLine($"현재까지 클리어한 층: {clearedLevel}층");
                 for (int i = 1; i <= 10; i++)
                 {
@@ -82,7 +82,7 @@ public static class ConsoleHelper
                 Console.WriteLine("             ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝       ╚═╝     ╚══════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝");
                 Console.SetCursorPosition(0, 18);
                 Console.WriteLine("========================================================================================================================");
-                Console.WriteLine($"던전 {selectedLevel}층에 진입했습니다. ");
+                Console.WriteLine($"캠프 {selectedLevel}층에 진입했습니다. ");
                 System.Threading.Thread.Sleep(1500);
                 Console.SetCursorPosition(0, 0);
                 Console.SetCursorPosition(0, 7);
@@ -110,6 +110,7 @@ public static class ConsoleHelper
                         float additionalAttackPower = player.AdditionalAttackPower;
                         float totalDefensivePower = player.TotalDefensivePower;
                         float additionalDefensivePower = player.AdditionalDefensivePower;
+                        float currentHp = player.CurrentHp;
                         float totalHp = player.TotalHp;
                         float additionalHp = player.AdditionalHp;
                         float totalMp = player.TotalMp;
@@ -121,13 +122,13 @@ public static class ConsoleHelper
                         Console.WriteLine($"{name} ({job})");
                         switch(job)
                         {
-                            case Jobs.전사:
+                            case Jobs.나영웅매니저님:
                                 Console.WriteLine($"공격력 : {totalAttackPower}{(additionalAttackPower > 0 ? $" (+{additionalAttackPower})" : "")}");
                                 break;
-                            case Jobs.궁수:
+                            case Jobs.박찬우매니저님:
                                 Console.WriteLine($"민첩성 : {totalAttackPower}{(additionalAttackPower > 0 ? $" (+{additionalAttackPower})" : "")}");
                                 break;
-                            case Jobs.법사:
+                            case Jobs.한효승매니저님:
                                 Console.WriteLine($"주문력 : {totalAttackPower}{(additionalAttackPower > 0 ? $" (+{additionalAttackPower})" : "")}");
                                 break;
                             default:
@@ -135,7 +136,7 @@ public static class ConsoleHelper
                                 break;
                         }
                         Console.WriteLine($"방어력 : {totalDefensivePower}{(additionalDefensivePower > 0 ? $" (+{additionalDefensivePower})" : "")}");
-                        Console.WriteLine($"최대 체력 : {totalHp}{(additionalHp > 0 ? $" (+{additionalHp})" : "")}");
+                        Console.WriteLine($"체력 : {currentHp} / {totalHp}{(additionalHp > 0 ? $" (+{additionalHp})" : "")}");
                         Console.WriteLine($"Gold : {gold} G\n");
                         Console.WriteLine("0. 나가기");
                         Console.Write("\n원하시는 행동을 입력해주세요.\n>>");

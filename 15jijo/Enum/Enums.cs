@@ -31,3 +31,35 @@ public enum questRequireStatName
     레벨
 
 }
+
+public enum Jobs
+{
+    나영웅매니저님 = 1,
+    박찬우매니저님,
+    한효승매니저님
+}
+
+public enum ItemType
+{
+    Consumable,
+    Equipment
+}
+
+public enum EquipmentItemType
+{
+    Armor,
+    Weapon
+}
+
+public enum ConsumeItemType
+{
+    HP,
+    MP
+}
+
+public enum BuyResult
+{
+    AlreadyPurchased,
+    NotEnoughGold,
+    Success
+}

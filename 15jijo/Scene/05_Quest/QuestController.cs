@@ -139,7 +139,7 @@ namespace _15jijo.ho
                 {
                     foreach (var item in quest.Reward_Items)
                     {
-                        if (GameManager.instance.purchasedItems.Contains(item))
+                        if (GameManager.instance.purchasedItems.Any(p => p.ItemName == item.ItemName))
                         {
                             GameManager.instance.player.UpdateGold((int)(item.ItemPrice * 0.85));
                         }

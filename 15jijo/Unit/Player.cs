@@ -66,19 +66,19 @@ public class Player : Unit
         AvailableSkills = new();
         switch (Job)
         {
-            case Jobs.전사:
+            case Jobs.나영웅매니저님:
                 if (GameManager.instance != null && GameManager.instance.skills != null)
                 {
                     AvailableSkills.Add(GameManager.instance.skills.playerSkills[0]);
                 }
                 break;
-            case Jobs.궁수:
+            case Jobs.박찬우매니저님:
                 if (GameManager.instance != null && GameManager.instance.skills != null)
                 {
                     AvailableSkills.Add(GameManager.instance.skills.playerSkills[1]);
                 }
                 break;
-            case Jobs.법사:
+            case Jobs.한효승매니저님:
                 if (GameManager.instance != null && GameManager.instance.skills != null)
                 {
                     AvailableSkills.Add(GameManager.instance.skills.playerSkills[2]);
@@ -95,7 +95,7 @@ public class Player : Unit
         CurrentHp = json["CurrentHp"]?.ToObject<float>() ?? 0;
         CurrentMp = json["CurrentMp"]?.ToObject<float>() ?? 0;
         AvailableSkills = json["AvailableSkills"]?.ToObject<List<Skill>>();
-        Job = json["Job"]?.ToObject<Jobs>() ?? Jobs.전사;
+        Job = json["Job"]?.ToObject<Jobs>() ?? Jobs.나영웅매니저님;
         Level = json["Level"]?.ToObject<int>() ?? 1;
         Exp = json["Exp"]?.ToObject<int>() ?? 0;
         RequiredExp = json["RequiredExp"]?.ToObject<int>() ?? 10;

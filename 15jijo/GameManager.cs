@@ -60,7 +60,7 @@ public class GameManager
         scenes.Add(SceneState.Shop, new ShopScene());
         scenes.Add(SceneState.Buying, new BuyingScene());
         scenes.Add(SceneState.Selling, new SellingScene());
-        scenes.Add(SceneState.Inventory, new Inventory());
+        scenes.Add(SceneState.Inventory, new InventoryScene());
         scenes.Add(SceneState.Fitting, new FittingScene());
         scenes.Add(SceneState.Eating, new EatingScene());
         scenes.Add(SceneState.SaveGame, new SaveScene());

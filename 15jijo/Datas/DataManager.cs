@@ -137,21 +137,6 @@ public class DataManager
         Console.WriteLine("데이터 로딩 완료!");
         await Task.Delay(1000);
 
-
-        //Console.WriteLine("\n\n");
-        //Console.WriteLine("=====Monster=====");
-        //foreach (var monster in monsterDatas.GetDatas())
-        //{
-        //    Console.WriteLine($"{monster.Name} {monster.TotalHp} {monster.TotalMp} {monster.CurrentAttackPower} {monster.CurrentDefensivePower}");
-        //}
-
-        //Console.WriteLine("\n");
-        //Console.WriteLine("=====Items=====");
-        //foreach (var item in itemDatas.GetDatas())
-        //{
-        //    Console.WriteLine($"{item.ItemName} | {item.ItemType}  | {item.ItemAbility} | {item.ItemDescription}  | {item.ItemPrice}");
-        //}
-
         isDataLoad = true;
     }
 
@@ -288,8 +273,6 @@ public class DataManager
 
         var purchasedInventoryToken = LoadJsonFromFile("purchasedInventoryInfo.txt");
 
-        // C#의 패턴 매칭으로
-        // inventoryToken이 JArray 타입인지 검사 -> 타입이 맞으면 inventoryArray로 캐스팅해 준다.
         //if (purchasedInventoryToken is JArray purchasedInventoryArray)
         //{
         //    List<Item> items = new List<Item>();

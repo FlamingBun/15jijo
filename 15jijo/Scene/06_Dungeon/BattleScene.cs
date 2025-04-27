@@ -1,5 +1,3 @@
-using System.Threading;
-
 class BattleScene : BaseScene
 {
     public override SceneState SceneState { get; protected set; } = SceneState.Battle;
@@ -31,31 +29,31 @@ class BattleScene : BaseScene
 
         if (isClear)
         {
-            if (GameManager.instance.dungeonController.clearedLevel < GameManager.instance.dungeonController.maxFloor)
+            if (selectedLevel > clearedLevel&&GameManager.instance.dungeonController.clearedLevel < GameManager.instance.dungeonController.maxFloor)
             {
                 GameManager.instance.dungeonController.clearedLevel++;
             }
-            FightLog($"던전 {clearedLevel + 1}층을 클리어했습니다. ");
+            FightLog($"캠프 {selectedLevel}층을 클리어했습니다. ");
             System.Threading.Thread.Sleep(300);
-            FightLog("Enter.던전 입구로 되돌아갑니다.");
+            FightLog("Enter를 누르면 캠프 입구로 되돌아갑니다.");
             Console.ReadLine();
             return SceneState.DungeonEntrance;
         }
         else if (isPlayerDead)
         {
-            FightLog("던전 클리어에 실패했습니다.");
+            FightLog("캠프 클리어에 실패했습니다.");
             System.Threading.Thread.Sleep(300);
-            FightLog("Enter를 누르면 던전 입구로 되돌아갑니다.");
+            FightLog("Enter를 누르면 캠프 입구로 되돌아갑니다.");
             Console.ReadLine();
             return SceneState.DungeonEntrance;
         }
         else if (isPlayerRun)
         {
-            FightLog("던전 입구로 도망칩니다.");
+            FightLog("캠프 입구로 도망칩니다.");
             FightLog($"몬스터의 공격으로 {player.Name}의 HP {(int)(player.BasicHp * 0.2f)}이 감소합니다.");
             player.TakeDamage((int)(player.BasicHp * 0.2f));
             System.Threading.Thread.Sleep(300);
-            FightLog("Enter를 누르면 던전 입구로 되돌아갑니다.");
+            FightLog("Enter를 누르면 캠프 입구로 되돌아갑니다.");
             Console.ReadLine();
             return SceneState.DungeonEntrance;
         }
@@ -162,7 +160,7 @@ class BattleScene : BaseScene
         }
 
         Console.WriteLine($"\n\n[{player.Name}] \nLv.1 \n직업:{player.Job} \nHP: {player.CurrentHp}/{player.BasicHp} " +
-            $"\nMP:{player.CurrentMp}/{player.BasicMp} \nATK:{player.CurrentAttackPower}\n\n");
+            $"\nATK:{player.CurrentAttackPower}\n\n");
         //}
 
         Console.SetCursorPosition(0, 18);
@@ -211,7 +209,7 @@ class BattleScene : BaseScene
                         System.Threading.Thread.Sleep(300);
                         FightLog($"[LV.{target.MonsterLevel} {target.Name}]을(를) 공격합니다!");
                         System.Threading.Thread.Sleep(300);
-                        FightLog($"{target.Name}{target.MonsterLevel}의 HP {player.CurrentAttackPower} 감소합니다.");
+                        FightLog($"[LV.{target.MonsterLevel} {target.Name}]의 HP {player.CurrentAttackPower} 감소합니다.");
                         System.Threading.Thread.Sleep(300);
                         FightLog("");
                         target.TakeDamage(player.CurrentAttackPower);
@@ -242,12 +240,7 @@ class BattleScene : BaseScene
             //    System.Threading.Thread.Sleep(10000);
             //    break;
             case "2":
-                FightLog("던전 입구로 도망칩니다.");
-                FightLog($"몬스터의 공격으로 {player.Name}의 HP {(int)(player.BasicHp * 0.2f)}이 감소합니다.");
-                player.TakeDamage((int)(player.BasicHp * 0.2f));
                 isPlayerRun = true;
-                FightLog(">>",0);
-                FightLog("던전 입구로 이동합니다.");
                 System.Threading.Thread.Sleep(1000);
                 break;
             default:

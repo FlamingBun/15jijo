@@ -1,4 +1,4 @@
-public class Inventory : BaseScene
+public class InventoryScene : BaseScene
 {
     public override SceneState SceneState { get; protected set; } = SceneState.Inventory;
 

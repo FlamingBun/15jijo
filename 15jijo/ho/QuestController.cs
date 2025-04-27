@@ -79,15 +79,15 @@ namespace _15jijo.ho
             quest.ShowQuest();
             if (quest.IsClear)
             {
-                Console.WriteLine("1. 퀘스트 완료\n0.나가기");
+                Console.Write("1. 퀘스트 완료\n0.나가기\n원하시는 행동을 입력해주세요.>>");
             }// 퀘스트가 클리어가 아니라면
             else if (quest.IsReceive) // 퀘스트가 진행 중이라면
             {
-                Console.WriteLine("0. 나가기");
+                Console.Write("0. 나가기\n원하시는 행동을 입력해주세요.>>");
             }
             else// 퀘스트를 진행 중이지 않다면
             {
-                Console.WriteLine("1. 퀘스트 수락\n0. 나가기");
+                Console.Write("1. 퀘스트 수락\n0. 나가기\n원하시는 행동을 입력해주세요.>>");
             }
         }
 
@@ -135,7 +135,22 @@ namespace _15jijo.ho
             {
                 GameManager.instance.player.UpdateExp(quest.Reward_Exp); // 플레이어 경험치 획득
                 GameManager.instance.player.UpdateGold(quest.Reward_Gold); // 플레이어 골드 획득
-                GameManager.instance.havingItems.AddRange(quest.Reward_Items); // 플레이어 아이템 획득
+                if(quest.Reward_Items!=null)
+                {
+                    foreach (var item in quest.Reward_Items)
+                    {
+                        if (GameManager.instance.purchasedItems.Contains(item))
+                        {
+                            GameManager.instance.player.UpdateGold((int)(item.ItemPrice * 0.85));
+                        }
+                        else 
+                        {
+                            GameManager.instance.havingItems.Add(item); // 플레이어 인벤토리에 아이템 추가
+                            GameManager.instance.purchasedItems.Add(item); // 구매한 아이템 목록에 추가
+                        }
+                    }
+
+                }
                 playerReceiveQuest.Remove(quest); // 퀘스트 삭제
                 GameManager.instance.questController.questList.Remove(quest); // 퀘스트 삭제
                 selectedQuestIndex = -1; // 퀘스트 인덱스 초기화

@@ -69,10 +69,12 @@ namespace _15jijo.ho
                     {
                         ConsumeItem ci = (ConsumeItem)item;
                         Console.WriteLine($"{item.ItemName} x {ci.ItemCount}");
+                        
                     }
                     else
                     {
-                        Console.WriteLine($"{item.ItemName} x 1 ");
+                        Console.WriteLine($"{item.ItemName} x 1 (이미 소지 시 보상 아이템 가격의 85% 대체 골드로 지급됩니다.)");
+                        
 
                     }
                         
@@ -92,9 +94,6 @@ namespace _15jijo.ho
         {
             this.targetMonster = targetMonster;
             this.goalCount = goal;
-            float bonusReward = 1f + goalCount * 0.1f; // 만약 많이 잡는 퀘스트가 걸리면 추가보상
-            Reward_Exp = (int)(Reward_Exp * bonusReward); // 추가보상 경험치, 골드
-            Reward_Gold = (int)(Reward_Gold * bonusReward);
             makeQuestCore();
             
 
@@ -174,9 +173,6 @@ namespace _15jijo.ho
 
             this.goalStatValue = goal;
             this.statType = type;
-            float bonusReward = 1f + goalStatValue * 0.01f; // 만약 많이 잡는 퀘스트가 걸리면 추가보상
-            Reward_Exp = (int)(Reward_Exp * bonusReward); // 추가보상 경험치, 골드
-            Reward_Gold = (int)(Reward_Gold * bonusReward);
             makeQuestCore();    // 퀘스트 핵심 정보 요약문 생성
             
 

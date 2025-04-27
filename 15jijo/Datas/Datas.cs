@@ -40,16 +40,6 @@ public class Datas<T>
         }
         return dataList;
     }
-    public List<T> GetDatas(int index)
-    {
-        List<T> dataList = new();
-        for(int i=0; i<index; i++)
-        {
-            T data = datas[i];
-            dataList.Add(data);
 
-        }
-        return dataList;
-    }
 }
 

@@ -1,10 +1,12 @@
-﻿namespace _15jijo
+internal class Program
 {
-    internal class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
+        DataManager dataManager = new DataManager();
+        if (dataManager.CheckLoadData()) 
         {
-            Console.WriteLine("Hello, World!");
+            GameManager gameManager = new GameManager();
+            gameManager.GameStart();
         }
     }
 }

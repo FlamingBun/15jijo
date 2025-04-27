@@ -198,7 +198,7 @@ public static class ConsoleHelper
                     {
                         Item item = equipmentItems[i];
                         string abillityType = GetItemTypeString(item);
-                        string priceDisplay = purchasedItems.Contains(item) ? "구매완료" : $"{item.ItemPrice} G";
+                        string priceDisplay = purchasedItems.Any(p => p.ItemName == item.ItemName) ? "구매완료" : $"{item.ItemPrice} G";
                         Console.WriteLine($"- {i + 1} {item.ItemName} | {abillityType} +{item.ItemAbility} | {item.ItemDescription} | {priceDisplay}");
                     }
                     Console.WriteLine("\n[소비 아이템 목록]");
@@ -425,7 +425,7 @@ public static class ConsoleHelper
         }
 
         // 입력한 번호가 선택지 개수보다 크거나 0보다 작으면 false
-        if (_selectionCount < inputNumber || inputNumber < 0)
+        if (_selectionCount < inputNumber ||  inputNumber < 0)
         {
 
             Thread.Sleep(1500);

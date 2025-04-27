@@ -59,29 +59,6 @@ class BattleScene : BaseScene
         }
 
         return SceneState.DungeonEntrance;
-        //if (isClear)
-        //{
-        //    if (GameManager.instance.dungeonController.clearedLevel < GameManager.instance.dungeonController.maxFloor)
-        //    {
-        //        GameManager.instance.dungeonController.clearedLevel++;
-        //    }
-        //    FightLog($"던전 {clearedLevel + 1}층을 클리어했습니다. ");
-        //    System.Threading.Thread.Sleep(300);
-        //      FightLog("Enter.던전 입구로 되돌아갑니다.");
-        //      Console.ReadLine();
-        //    return SceneState.DungeonEntrance;
-        //}
-        //else
-        //{
-        //FightLog("던전 클리어에 실패했습니다.");
-        //System.Threading.Thread.Sleep(300);
-        //FightLog("Enter.던전 입구로 되돌아갑니다.");
-        //Console.ReadLine();
-        //return SceneState.DungeonEntrance;
-        ////}
-
-        //Console.ReadLine();
-        //return SceneState.DungeonEntrance;
     }
     public void BattleSetting()
     {
@@ -130,45 +107,6 @@ class BattleScene : BaseScene
             }
         }
     }
-    //public bool BattleSetting()
-    //{
-    //    player = GameManager.instance.player;
-    //    selectedLevel = GameManager.instance.dungeonController.selectedLevel;
-
-
-    //    bool isClear = false; // 층 클리어
-    //    bool isPlayerDead = false; //플레이어 사망시
-    //    bool isPlayerRun = true; //플레이어 도망시
-
-    //    while (true)
-    //    {
-    //        GetMonster();
-    //        isPlayerRun = PlayerTurn();
-    //        isClear = selectedMonsters.All(monster => monster.CurrentHp <= 0);
-    //        if (!isPlayerRun)
-    //        {
-    //            FightLog("플레이어가 도망쳤습니다.");
-    //            return false;
-    //        }
-    //        if (isClear)
-    //        {
-    //            FightLog("플레이어가 몬스터를 모두 처치했습니다!");
-    //            return true;
-    //        }
-    //        MonsterTurn();
-    //        isPlayerDead = player.CurrentHp <= 0;
-    //        if (isPlayerDead)
-    //        {
-    //            FightLog("플레이어가 사망했습니다.");
-    //            System.Threading.Thread.Sleep(300);
-    //            FightLog($"{player.Level} {player.Name}");
-    //            System.Threading.Thread.Sleep(300);
-    //            FightLog($"HP {player.BasicHp} -> 0");
-    //            System.Threading.Thread.Sleep(300);
-    //            return false;
-    //        }
-    //    }
-    //}
 
 
     public void GetMonsterRandomCreate()
@@ -187,7 +125,7 @@ class BattleScene : BaseScene
         // 몬스터 목록을 리스트로 가져오기
         for (int i = 0; i < monsterCount; i++)
         {
-            Monster baseMonster = allMonsters[random.Next(allMonsters.Count)];
+            Monster baseMonster = allMonsters[random.Next(selectedLevel-1, selectedLevel+2)]; // TODO:: 수정
             Monster cloned = new Monster(baseMonster.Name, baseMonster.CurrentHp, baseMonster.CurrentAttackPower);
 
             int randomLevel = random.Next(Math.Max(1, selectedLevel - 2), selectedLevel + 3);
@@ -243,9 +181,9 @@ class BattleScene : BaseScene
         FightLog($"[{player.Name}]의 턴입니다.");
         FightLog(" ");
         FightLog("1.공격하기");
-        FightLog("2.스킬");
-        FightLog("3.인벤토리");
-        FightLog("4.탈출하기");
+        //FightLog("2.스킬");
+        //FightLog("3.인벤토리");
+        FightLog("2.탈출하기");
         FightLog(" ");
         FightLog("원하는 행동을 선택해주세요.");
         System.Threading.Thread.Sleep(300);
@@ -299,15 +237,15 @@ class BattleScene : BaseScene
                 }
 
                 break;
+            //case "2":
+            //    FightLog("스킬을 사용합니다.");
+            //    System.Threading.Thread.Sleep(10000);
+            //    break;
+            //case "3":
+            //    FightLog("인벤토리");
+            //    System.Threading.Thread.Sleep(10000);
+            //    break;
             case "2":
-                FightLog("스킬을 사용합니다.");
-                System.Threading.Thread.Sleep(10000);
-                break;
-            case "3":
-                FightLog("인벤토리");
-                System.Threading.Thread.Sleep(10000);
-                break;
-            case "4":
                 FightLog("던전 입구로 도망칩니다.");
                 FightLog($"몬스터의 공격으로 {player.Name}의 HP {(int)(player.BasicHp * 0.2f)}이 감소합니다.");
                 player.TakeDamage((int)(player.BasicHp * 0.2f));
@@ -327,36 +265,6 @@ class BattleScene : BaseScene
 
     }
 
-
-    public int PlayerChoice()
-    {
-        bool isValidInput = false;
-        int inputNumber = -1;
-        while (!isValidInput)
-        {
-            string? input = Console.ReadLine();
-            selectionCount = 4;
-            isValidInput = ConsoleHelper.CheckUserInputNoZero(input, selectionCount, ref inputNumber);
-        }
-        return inputNumber;
-    }
-
-    public void ActPlayer(int selectedNumber)
-    {
-        switch (selectedNumber)
-        {
-            case 1:
-                PlayerAttack();
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                isPlayerRun = true;
-                break;
-        }
-    }
 
     public void PlayerAttack() 
     {
@@ -404,7 +312,7 @@ class BattleScene : BaseScene
             FightLog("");
 
             System.Threading.Thread.Sleep(300);
-            FightLog($"[{monster.Name}{monster.MonsterLevel}]이 {player.Name}를 공격했습니다.");
+            FightLog($"[LV.{monster.MonsterLevel} {monster.Name}]이 {player.Name}를 공격했습니다.");
             System.Threading.Thread.Sleep(300);
             FightLog($"Player의 HP가 {Math.Round(monster.CurrentAttackPower)} 감소했습니다.");
             FightLog("");

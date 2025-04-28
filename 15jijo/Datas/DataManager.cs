@@ -36,23 +36,51 @@ public class DataManager
 
     public bool CheckLoadData()
     {
+        // 로딩이 끝날 때까지 대기
+        int timeoutCounter = 0;
+        const int MAX_TIMEOUT = 100; // 50초
+        
+        Console.WriteLine("데이터 로딩 중...");
+        
         while (!isDataLoad && !isDataLoadFail)
         {
-
+            // 50초 후에도 로드되지 않으면 타임아웃 처리
+            timeoutCounter++;
+            if (timeoutCounter > MAX_TIMEOUT) // 500ms * 100 = 50초
+            {
+                Console.WriteLine("데이터 로딩 시간이 초과되었습니다.");
+                isDataLoadFail = true;
+                break;
+            }
+            
+            // 잠시 대기
+            System.Threading.Thread.Sleep(500);
+            
+            // 현재 진행 상태를 표시
+            if (timeoutCounter % 10 == 0) // 5초마다
+            {
+                Console.Write(".");
+            }
         }
+
+        Console.WriteLine(); // 새 줄 추가
 
         if (isDataLoad)
         {
             Console.Clear();
-            Console.WriteLine("Enter를 입력해주세요!");
-            Console.ReadLine();
+            Console.WriteLine("데이터 로딩이 완료되었습니다.");
+            Console.WriteLine("Enter를 눌러 게임을 시작하세요!");
+            Console.ReadLine(); // 사용자 입력 대기
             return true;
         }
+        
         if (isDataLoadFail)
         {
-            Console.WriteLine("로딩 실패 게임을 다시 시작해주세요..");
-            Console.ReadLine();
+            Console.WriteLine("데이터 로딩에 실패했습니다.");
+            Console.WriteLine("게임을 다시 시작해주세요.");
+            Console.ReadLine(); // 사용자 입력 대기
         }
+        
         return false;
     }
 
@@ -60,35 +88,23 @@ public class DataManager
     {
         var loadingTask = ShowConsoleLoading();
 
-        var monsters = await LoadWithConsoleLoading("Monster", "A1:E", row => new Monster(
-            row[0]?.ToString() ?? "",
-            int.Parse(row[1]?.ToString() ?? "1"),
-            int.Parse(row[2]?.ToString() ?? "1"),
-            int.Parse(row[3]?.ToString() ?? "1"),
-            int.Parse(row[4]?.ToString() ?? "1")
-        ));
-
-        var equipItems = await LoadWithConsoleLoading("EquipmentItem", "A1:F", row => new EquipmentItem(
-            row[0]?.ToString() ?? "",
-            (ItemType)int.Parse(row[1]?.ToString() ?? "1"),
-            (EquipmentItemType)int.Parse(row[2]?.ToString() ?? "1"),
-            int.Parse(row[3]?.ToString() ?? "1"),
-            row[4]?.ToString() ?? "1",
-            int.Parse(row[5]?.ToString() ?? "1")
-            )
-        );
-
-        var consumeItems = await LoadWithConsoleLoading("ConsumeItem", "A1:F", row => new ConsumeItem(
-            row[0]?.ToString() ?? "",
-            (ItemType)int.Parse(row[1]?.ToString() ?? "1"),
-            (ConsumeItemType)int.Parse(row[2]?.ToString() ?? "1"),
-            int.Parse(row[3]?.ToString() ?? "1"),
-            row[4]?.ToString() ?? "1",
-            int.Parse(row[5]?.ToString() ?? "1")
-            )
-        );
-
+        // 기본 몬스터 데이터 생성
+        var monsters = new Datas<Monster>();
+        monsters.AddData(new Monster("슬라임", 10, 5, 2, 1));
+        monsters.AddData(new Monster("고블린", 15, 8, 3, 2));
+        monsters.AddData(new Monster("오크", 25, 10, 5, 3));
         monsterDatas = monsters;
+
+        // 기본 장비 아이템 생성
+        var equipItems = new Datas<EquipmentItem>();
+        equipItems.AddData(new EquipmentItem("낡은 검", ItemType.Equipment, EquipmentItemType.Weapon, 2, "공격력이 2 증가합니다.", 300));
+        equipItems.AddData(new EquipmentItem("낡은 갑옷", ItemType.Equipment, EquipmentItemType.Armor, 2, "방어력이 2 증가합니다.", 300));
+        
+        // 기본 소비 아이템 생성
+        var consumeItems = new Datas<ConsumeItem>();
+        consumeItems.AddData(new ConsumeItem("체력 물약", ItemType.Consumable, ConsumeItemType.HP, 10, "체력을 10 회복합니다.", 100));
+        
+        // 아이템 데이터에 추가
         foreach (var _item in equipItems.GetDatas())
         {
             itemDatas.AddData(_item);
@@ -99,43 +115,39 @@ public class DataManager
             itemDatas.AddData(_item);
         }
 
-        var killMonsterQuests = await LoadWithConsoleLoading("KillMonsterQuest", "A1:G", row => new KillMonsterQuest(
-            row[0]?.ToString() ?? "", // name
-            row[1]?.ToString() ?? "", // desc
-            int.Parse(row[2]?.ToString() ?? "1"), // gold
-            int.Parse(row[3]?.ToString() ?? "1"), // exp 
-            itemDatas.GetData(row[4]?.ToString() ?? "0"), // item
-            monsterDatas.GetData(int.Parse(row[5]?.ToString() ?? "0")), // monster
-            int.Parse(row[6]?.ToString() ?? "1")) // goal
-
-
-        );
-
-        var playerStatQuest = await LoadWithConsoleLoading("PlayerStatQuest", "A1:G", row => new PlayerStatQuest(
-            row[0]?.ToString() ?? "",
-            row[1]?.ToString() ?? "",
-            int.Parse(row[2]?.ToString() ?? "1"),
-            int.Parse(row[3]?.ToString() ?? "1"),
-            itemDatas.GetData(row[4]?.ToString() ?? "0"),
-            (questRequireStatName)int.Parse(row[5]?.ToString() ?? "1"),
-            int.Parse(row[6]?.ToString() ?? "1")
-
-            )
-
-
-        );
+        // 기본 퀘스트 생성
+        var killMonsterQuests = new Datas<KillMonsterQuest>();
+        // 아이템 리스트 생성
+        var questRewardItems = new List<Item> { itemDatas.GetDatas()[0] };
+        
+        killMonsterQuests.AddData(new KillMonsterQuest(
+            "슬라임 퇴치", 
+            "슬라임 1마리 퇴치하기", 
+            100, 
+            50, 
+            questRewardItems, 
+            monsterDatas.GetDatas()[0], 
+            1));
+        
+        var playerStatQuest = new Datas<PlayerStatQuest>();
+        playerStatQuest.AddData(new PlayerStatQuest(
+            "공격력 강화", 
+            "공격력 5 이상 달성하기", 
+            200, 
+            100, 
+            questRewardItems, 
+            questRequireStatName.공격력, 
+            5));
+        
         monsterQuest = killMonsterQuests;
         statQuest = playerStatQuest;
-
-
-
 
         isLoading = false; // 위에 데이터를 전부 받아오면 그때 isLoading을 false로 변경 -> 애니메이션은 Task를 반환
         await loadingTask; // 애니메이션 Task가 완전히 끝날 때까지 대기
 
         Console.Clear();
         Console.WriteLine("데이터 로딩 완료!");
-        await Task.Delay(1000);
+        Console.WriteLine("계속하려면 Enter를 누르세요...");
 
         isDataLoad = true;
     }

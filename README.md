@@ -110,7 +110,7 @@ Project Function🎈
 
 Project Achitecture 🚩
 ------------------------------------
-프로젝트 아키텍처를 소개해주세요!
+* 클래스 다이어그램
 ![15jijoClassDiagram](https://github.com/user-attachments/assets/f9afd45b-8aa1-48eb-9788-0a212fb024b0)
 
 <br>

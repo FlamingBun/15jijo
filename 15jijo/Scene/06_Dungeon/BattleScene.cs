@@ -33,27 +33,27 @@ class BattleScene : BaseScene
             {
                 GameManager.instance.dungeonController.clearedLevel++;
             }
-            FightLog($"캠프 {selectedLevel}층을 클리어했습니다. ");
+            FightLog($"{selectedLevel}조 교육을 완료했습니다. ");
             System.Threading.Thread.Sleep(300);
-            FightLog("Enter를 누르면 캠프 입구로 되돌아갑니다.");
+            FightLog("Enter를 누르면 ZEP 입구로 되돌아갑니다.");
             Console.ReadLine();
             return SceneState.DungeonEntrance;
         }
         else if (isPlayerDead)
         {
-            FightLog("캠프 클리어에 실패했습니다.");
+            FightLog("ZEP 교육에 실패했습니다.");
             System.Threading.Thread.Sleep(300);
-            FightLog("Enter를 누르면 캠프 입구로 되돌아갑니다.");
+            FightLog("Enter를 누르면 ZEP 입구로 되돌아갑니다.");
             Console.ReadLine();
             return SceneState.DungeonEntrance;
         }
         else if (isPlayerRun)
         {
-            FightLog("캠프 입구로 도망칩니다.");
-            FightLog($"몬스터의 공격으로 {player.Name}의 HP {(int)(player.BasicHp * 0.2f)}이 감소합니다.");
+            FightLog("ZEP 입구로 도망칩니다.");
+            FightLog($"학생의 질문 폭격으로 {player.Name}의 HP {(int)(player.BasicHp * 0.2f)}이 감소합니다.");
             player.TakeDamage((int)(player.BasicHp * 0.2f));
             System.Threading.Thread.Sleep(300);
-            FightLog("Enter를 누르면 캠프 입구로 되돌아갑니다.");
+            FightLog("Enter를 누르면 ZEP 입구로 되돌아갑니다.");
             Console.ReadLine();
             return SceneState.DungeonEntrance;
         }
@@ -81,13 +81,13 @@ class BattleScene : BaseScene
             isClear = selectedMonsters.All(monster => monster.CurrentHp <= 0);
             if (isPlayerRun)
             {
-                FightLog("플레이어가 도망쳤습니다.");
+                FightLog($"{player.Job}이 도망쳤습니다.");
                 return;
 
             }
             if (isClear)
             {
-                FightLog("플레이어가 몬스터를 모두 처치했습니다!");
+                FightLog($"{player.Job}이 학생을 모두 처치했습니다!");
                 return;
             }
             if (isPlayerTurnPreserve)
@@ -141,7 +141,7 @@ class BattleScene : BaseScene
 
         Console.SetCursorPosition(0, 0);
         Console.WriteLine($"BATTLE START!!!!\n");
-        Console.WriteLine("\n[몬스터정보]\n");
+        Console.WriteLine($"\n[{selectedLevel}조 학생 정보]\n");
 
         //isClear = (selectedMonsters.MonsterHp <= 0) ? true : false;
 
@@ -172,9 +172,9 @@ class BattleScene : BaseScene
     {
         player = GameManager.instance.player;
         selectedLevel = GameManager.instance.dungeonController.selectedLevel;
-        FightLog($"[{player.Name}]의 턴입니다.");
+        FightLog($"{player.Name}[{player.Job}]의 턴입니다.");
         FightLog(" ");
-        FightLog("1.공격하기");
+        FightLog("1.교육하기");
         //FightLog("2.스킬");
         //FightLog("3.인벤토리");
         FightLog("2.탈출하기");
@@ -197,7 +197,7 @@ class BattleScene : BaseScene
                 while (true)
                 {
                     isPlayerTurnPreserve = true;
-                    FightLog("공격할 몬스터를 선택해주세요.");
+                    FightLog("교육할 학생을 선택해주세요.");
                     FightLog("0. 취소");
                     FightLog(">>",0);
                     string choise_MonsterAttack = Console.ReadLine();
@@ -207,7 +207,7 @@ class BattleScene : BaseScene
                     {
                         var target = aliveMonsters[selectedMonstersNum - 1];
                         System.Threading.Thread.Sleep(300);
-                        FightLog($"[LV.{target.MonsterLevel} {target.Name}]을(를) 공격합니다!");
+                        FightLog($"[LV.{target.MonsterLevel} {target.Name}]을(를) 교육합니다!");
                         System.Threading.Thread.Sleep(300);
                         FightLog($"[LV.{target.MonsterLevel} {target.Name}]의 HP {player.CurrentAttackPower} 감소합니다.");
                         System.Threading.Thread.Sleep(300);
@@ -224,7 +224,7 @@ class BattleScene : BaseScene
                     else
                     {
                         FightLog("잘못된 입력입니다.");
-                        FightLog("공격할 대상을 선택해주세요.");
+                        FightLog("교육할 대상을 선택해주세요.");
                         System.Threading.Thread.Sleep(1000);
                         break;
                     }
@@ -255,55 +255,19 @@ class BattleScene : BaseScene
     }
 
 
-    public void PlayerAttack() 
-    {
-        bool isValidInput = false;
-        int inputNumber = -1;
-        while (!isValidInput)
-        {
-            FightLog("공격할 몬스터를 선택해주세요.");
-            string? input = Console.ReadLine();
-            selectionCount = selectedMonsters.Count;
-            isValidInput = ConsoleHelper.CheckUserInputNoZero(input, selectionCount, ref inputNumber);
-
-            if (inputNumber <= selectedMonsters.Count)
-            {
-                
-            }
-            else
-            {
-                FightLog("잘못된 입력입니다.");
-            }
-            
-            selectionCount = selectedMonsters.Count;
-            isValidInput = ConsoleHelper.CheckUserInput(input, selectionCount, ref inputNumber);
-        }
-        // inputNumber가 0이면 다시 선택
-        if (inputNumber != 0) 
-        {
-            AttakMonster();
-        }
-    }
-
-    public void AttakMonster() 
-    {
-        
-    }
-
-
     public void MonsterTurn()
     {
         foreach (var monster in selectedMonsters.Where(m => m.CurrentHp > 0))
         {
             GetMonster();
             System.Threading.Thread.Sleep(300);
-            FightLog("몬스터들이 공격을 시작합니다.");
+            FightLog($"[LV.{monster.MonsterLevel} {monster.Name}]이 질문 공격을 시작합니다.");
             FightLog("");
 
             System.Threading.Thread.Sleep(300);
-            FightLog($"[LV.{monster.MonsterLevel} {monster.Name}]이 {player.Name}를 공격했습니다.");
+            FightLog($"[LV.{monster.MonsterLevel} {monster.Name}]이 {player.Name} [{player.Job}]에게 질문 공격했습니다.");
             System.Threading.Thread.Sleep(300);
-            FightLog($"Player의 HP가 {Math.Round(monster.CurrentAttackPower)} 감소했습니다.");
+            FightLog($"{player.Name} [{player.Job}]의 HP가 {Math.Round(monster.CurrentAttackPower)} 감소했습니다.");
             FightLog("");
             System.Threading.Thread.Sleep(300);
 

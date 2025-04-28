@@ -23,7 +23,7 @@ public static class ConsoleHelper
                 Console.WriteLine("3. 상점");
                 Console.WriteLine("4. 휴식하기");
                 Console.WriteLine("5. 퀘스트");
-                Console.WriteLine($"6. 캠프 입장(현재 진행: {clearedLevel}층)");
+                Console.WriteLine($"6. ZEP 입장(현재 진행: {clearedLevel}조)");
                 Console.WriteLine("7. 게임 저장하기");
                 Console.WriteLine("8. 게임 종료하기\n");
                 Console.WriteLine("원하시는 행동을 입력해주세요.\n");
@@ -54,37 +54,25 @@ public static class ConsoleHelper
                 Console.Write(">>");
                 break;
             case SceneState.DungeonEntrance:
-                Console.WriteLine("캠프 입구에 입장하셨습니다.");
-                Console.WriteLine($"현재까지 클리어한 층: {clearedLevel}층");
+                Console.WriteLine("ZEP에 입장하셨습니다.");
+                Console.WriteLine($"현재까지 교육한 조: {clearedLevel}조");
                 for (int i = 1; i <= 10; i++)
                 {
                     Console.OutputEncoding = Encoding.UTF8;
                     if (i <= clearedLevel + 1)
                     {
-                        Console.WriteLine($"▶ {i}층");
+                        Console.WriteLine($"▶ {i}조");
                     }
                     else
                     {
-                        Console.WriteLine($"ꗃ {i}층");
+                        Console.WriteLine($"ꗃ {i}조");
                     }
                 }
                 break;
             case SceneState.Battle:
                 //TextReaderingHint = TextReaderingHint.AntiAlias;
                 int selectedLevel = GameManager.instance.dungeonController.selectedLevel;
-                Console.SetCursorPosition(0, 7);
-                Console.OutputEncoding = Encoding.UTF8;
-                Console.WriteLine("             ███████╗██╗██████╗ ███████╗████████╗    ███████╗██╗      ██████╗  ██████╗ ██████╗ ");
-                Console.WriteLine("             ██╔════╝██║██╔══██╗██╔════╝╚══██╔══╝    ██╔════╝██║     ██╔═══██╗██╔═══██╗██╔══██╗");
-                Console.WriteLine("             █████╗  ██║██████╔╝███████╗   ██║       █████╗  ██║     ██║   ██║██║   ██║██████╔╝");
-                Console.WriteLine("             ██╔══╝  ██║██╔══██╗╚════██║   ██║       ██╔══╝  ██║     ██║   ██║██║   ██║██╔══██╗");
-                Console.WriteLine("             ██║     ██║██║  ██║███████║   ██║       ██║     ███████╗╚██████╔╝╚██████╔╝██║  ██║");
-                Console.WriteLine("             ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝       ╚═╝     ╚══════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝");
-                Console.SetCursorPosition(0, 18);
-                Console.WriteLine("========================================================================================================================");
-                Console.WriteLine($"캠프 {selectedLevel}층에 진입했습니다. ");
-                System.Threading.Thread.Sleep(1500);
-                Console.SetCursorPosition(0, 0);
+                
                 Console.SetCursorPosition(0, 7);
                 Console.WriteLine("     ██████╗  █████╗ ████████╗████████╗██╗     ███████╗    ███████╗████████╗ █████╗ ██████╗ ████████╗██╗██╗██╗██╗██╗  ");
                 Console.WriteLine("     ██╔══██╗██╔══██╗╚══██╔══╝╚══██╔══╝██║     ██╔════╝    ██╔════╝╚══██╔══╝██╔══██╗██╔══██╗╚══██╔══╝██║██║██║██║██║  ");
@@ -95,6 +83,7 @@ public static class ConsoleHelper
                 Console.SetCursorPosition(0, 18);
                 Console.WriteLine("========================================================================================================================");
                 Console.WriteLine($"BATTLE START!!!!                     ");
+                Console.WriteLine($"ZEP {selectedLevel}조에 진입했습니다. ");
                 System.Threading.Thread.Sleep(1500);
                 break;
             case SceneState.Status:

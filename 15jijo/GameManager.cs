@@ -1,13 +1,15 @@
+using _15jijo.ho;
+
 public class GameManager
 {
     public static GameManager? instance;
-
     private Dictionary<SceneState, BaseScene>? scenes;
-
     public Player? player;
-
     public Skills? skills;
-
+    public List<Item>? havingItems;
+    public List<Item>? purchasedItems;
+    public QuestController? questController;
+    public DungeonController dungeonController;
     private bool hasData;
 
     private SceneState currentSceneState;
@@ -23,13 +25,19 @@ public class GameManager
         {
             instance = this;
         }
-        // TODO: 게임에 필요한 객체들 생성 및 초기화
-        
+        skills = new();
+        havingItems = new()
+        {
+            
+        };
+        purchasedItems= new();
+        questController = new();
+        dungeonController = new DungeonController();
+
+
         // 만약 데이터가 없으면 false -> 캐릭터 생성씬
-        hasData = false;
+        hasData = DataManager.instance.LoadPlayerData();
         InitAllScenes();
-
-
         if (hasData)
         {
             currentSceneState = SceneState.Main;
@@ -38,6 +46,7 @@ public class GameManager
         {
             currentSceneState = SceneState.MakeCharacter;
         }
+
     }
 
     private void InitAllScenes() 
@@ -48,12 +57,15 @@ public class GameManager
         scenes.Add(SceneState.Relax, new RelaxScene());
         scenes.Add(SceneState.DungeonEntrance, new DungeonEntranceScene());
         scenes.Add(SceneState.Status, new StatusScene());
-            // [jaeyoon] 상점/인벤토리 관련
-        //scenes.Add(SceneState.Inventory, new SceneInventory());
-        //scenes.Add(SceneState.ItemUse, new SceneItemUse());
-        //scenes.Add(SceneState.Shop, new SceneShop());
-        //scenes.Add(SceneState.Buy, new SceneBuy());
-        //scenes.Add(SceneState.Sell, new SceneSell());
+        scenes.Add(SceneState.Shop, new ShopScene());
+        scenes.Add(SceneState.Buying, new BuyingScene());
+        scenes.Add(SceneState.Selling, new SellingScene());
+        scenes.Add(SceneState.Inventory, new InventoryScene());
+        scenes.Add(SceneState.Fitting, new FittingScene());
+        scenes.Add(SceneState.Eating, new EatingScene());
+        scenes.Add(SceneState.SaveGame, new SaveScene());
+        scenes.Add(SceneState.Quest, new QuestScene());
+        scenes.Add(SceneState.Battle, new BattleScene());
     }
 
     public void GameStart()

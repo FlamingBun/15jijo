@@ -10,7 +10,7 @@ class DungeonEntranceScene : BaseScene
         selectionCount = 10;
 
         int inputNumber = -1;
-        Console.Write("입장할 층수를 입력하세요 (1~10): ");
+        Console.Write("교육할 조를 입력하세요 (1~10): ");
         string input = Console.ReadLine();
         bool isValidInput = ConsoleHelper.CheckUserInput(input, selectionCount, ref inputNumber);
 
@@ -40,11 +40,11 @@ class DungeonEntranceScene : BaseScene
 
         if (inputLevel > clearedLevel + 1)
         {
-            Console.WriteLine($"\n해당층은 잠겨있습니다. 이전 층을 먼저 클리어해주세요. ~ ☆ .☆ ~\n");
+            Console.WriteLine($"\n해당조는 잠겨있습니다. 이전 조를 먼저 교육해주세요. ~ ☆ .☆ ~\n");
             Thread.Sleep(1500);
             return false;
         }
-        Console.Write($"\n캠프 {inputLevel}층으로 진입합니다.");
+        Console.Write($"\nZEP {inputLevel}조로 진입합니다.");
         Console.Write(".");
         System.Threading.Thread.Sleep(1000);
         Console.Write(".");

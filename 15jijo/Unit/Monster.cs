@@ -60,13 +60,13 @@ public class Monster : Unit
 
     public void PrintMonster_List()
     {
-        Console.WriteLine($"Lv.{MonsterLevel} | {Name} | HP:{Math.Round(CurrentHp)} | 공격력:{Math.Round(CurrentAttackPower)}");
+        Console.WriteLine($"Lv.{MonsterLevel} | {Name} | HP:{Math.Round(CurrentHp)} | 공격력:{Math.Round(CurrentAttackPower)}    ");
     }
 
 
     public void PrintMonster_Dead()
     {
-        Console.WriteLine($"Lv.{MonsterLevel} | DEAD                                       ");//DEAD 색상 회색으로 변경 추가. 
+        Console.WriteLine($"Lv.{MonsterLevel} | {Name}  | DEAD                                     ");//DEAD 색상 회색으로 변경 추가. 
     }
 
     public void SetLevel(int level)

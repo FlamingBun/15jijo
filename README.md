@@ -1,4 +1,4 @@
-🎉Team 15Jijo TextRPG Project 
+Team 15Jijo TextRPG Project 🎉
 =============
 # Readme index 🎁
 

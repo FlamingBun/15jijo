@@ -1,6 +1,6 @@
 🎉Team 15Jijo TextRPG Project 
 =============
-# Readme index
+# Readme index 🎁
 
 ### 1. Project Description 
   * Team 15Jijo TextRPG Project가 어떤 프로젝트인지 설명합니다.

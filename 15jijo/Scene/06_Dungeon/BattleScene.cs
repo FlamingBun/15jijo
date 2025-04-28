@@ -50,7 +50,7 @@ class BattleScene : BaseScene
         else if (isPlayerRun)
         {
             FightLog("ZEP 입구로 도망칩니다.");
-            FightLog($"학생의 질문 폭격으로 {player.Name}의 HP {(int)(player.BasicHp * 0.2f)}이 감소합니다.");
+            FightLog($"학생의 질문 폭격으로 [{player.Job}]의 HP {(int)(player.BasicHp * 0.2f)}이 감소합니다.");
             player.TakeDamage((int)(player.BasicHp * 0.2f));
             System.Threading.Thread.Sleep(300);
             FightLog("Enter를 누르면 ZEP 입구로 되돌아갑니다.");
@@ -172,7 +172,7 @@ class BattleScene : BaseScene
     {
         player = GameManager.instance.player;
         selectedLevel = GameManager.instance.dungeonController.selectedLevel;
-        FightLog($"{player.Name}[{player.Job}]의 턴입니다.");
+        FightLog($"[{player.Job}]의 턴입니다.");
         FightLog(" ");
         FightLog("1.교육하기");
         //FightLog("2.스킬");
@@ -265,9 +265,9 @@ class BattleScene : BaseScene
             FightLog("");
 
             System.Threading.Thread.Sleep(300);
-            FightLog($"[LV.{monster.MonsterLevel} {monster.Name}]이 {player.Name} [{player.Job}]에게 질문 공격했습니다.");
+            FightLog($"[LV.{monster.MonsterLevel} {monster.Name}]이 [{player.Job}]에게 질문 공격했습니다.");
             System.Threading.Thread.Sleep(300);
-            FightLog($"{player.Name} [{player.Job}]의 HP가 {Math.Round(monster.CurrentAttackPower)} 감소했습니다.");
+            FightLog($"[{player.Job}]의 HP가 {Math.Round(monster.CurrentAttackPower)} 감소했습니다.");
             FightLog("");
             System.Threading.Thread.Sleep(300);
 

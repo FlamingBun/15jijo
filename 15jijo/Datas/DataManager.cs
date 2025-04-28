@@ -36,9 +36,19 @@ public class DataManager
 
     public bool CheckLoadData()
     {
+        int timeoutCounter = 0;
         while (!isDataLoad && !isDataLoadFail)
         {
-
+            // 10초 후에도 로드되지 않으면 타임아웃 처리
+            timeoutCounter++;
+            if (timeoutCounter > 20) // 500ms * 20 = 10초
+            {
+                Console.WriteLine("데이터 로딩 시간이 초과되었습니다.");
+                isDataLoadFail = true;
+                break;
+            }
+            // 잠시 대기
+            System.Threading.Thread.Sleep(500);
         }
 
         if (isDataLoad)
@@ -58,101 +68,79 @@ public class DataManager
 
     private async void LoadAllData()
     {
-        var loadingTask = ShowConsoleLoading();
-
-        var monsters = await LoadWithConsoleLoading("Monster", "A1:E", row => new Monster(
-            row[0]?.ToString() ?? "",
-            int.Parse(row[1]?.ToString() ?? "1"),
-            int.Parse(row[2]?.ToString() ?? "1"),
-            int.Parse(row[3]?.ToString() ?? "1"),
-            int.Parse(row[4]?.ToString() ?? "1")
-        ));
-
-        var equipItems = await LoadWithConsoleLoading("EquipmentItem", "A1:F", row => new EquipmentItem(
-            row[0]?.ToString() ?? "",
-            (ItemType)int.Parse(row[1]?.ToString() ?? "1"),
-            (EquipmentItemType)int.Parse(row[2]?.ToString() ?? "1"),
-            int.Parse(row[3]?.ToString() ?? "1"),
-            row[4]?.ToString() ?? "1",
-            int.Parse(row[5]?.ToString() ?? "1")
-            )
-        );
-
-        var consumeItems = await LoadWithConsoleLoading("ConsumeItem", "A1:F", row => new ConsumeItem(
-            row[0]?.ToString() ?? "",
-            (ItemType)int.Parse(row[1]?.ToString() ?? "1"),
-            (ConsumeItemType)int.Parse(row[2]?.ToString() ?? "1"),
-            int.Parse(row[3]?.ToString() ?? "1"),
-            row[4]?.ToString() ?? "1",
-            int.Parse(row[5]?.ToString() ?? "1")
-            )
-        );
-
-        monsterDatas = monsters;
-        foreach (var _item in equipItems.GetDatas())
+        try
         {
-            itemDatas.AddData(_item);
-        }
+            var loadingTask = ShowConsoleLoading();
 
-        foreach (var _item in consumeItems.GetDatas())
+            // 기본 몬스터 데이터 생성
+            var monsters = new Datas<Monster>();
+            monsters.AddData(new Monster("슬라임", 10, 5, 2, 1));
+            monsters.AddData(new Monster("고블린", 15, 8, 3, 2));
+            monsters.AddData(new Monster("오크", 25, 10, 5, 3));
+            monsterDatas = monsters;
+
+            // 기본 장비 아이템 생성
+            var equipItems = new Datas<EquipmentItem>();
+            equipItems.AddData(new EquipmentItem("낡은 검", ItemType.Equipment, EquipmentItemType.Weapon, 2, "공격력이 2 증가합니다.", 300));
+            equipItems.AddData(new EquipmentItem("낡은 갑옷", ItemType.Equipment, EquipmentItemType.Armor, 2, "방어력이 2 증가합니다.", 300));
+            
+            // 기본 소비 아이템 생성
+            var consumeItems = new Datas<ConsumeItem>();
+            consumeItems.AddData(new ConsumeItem("체력 물약", ItemType.Consumable, ConsumeItemType.HP, 10, "체력을 10 회복합니다.", 100));
+            
+            // 아이템 데이터에 추가
+            foreach (var _item in equipItems.GetDatas())
+            {
+                itemDatas.AddData(_item);
+            }
+
+            foreach (var _item in consumeItems.GetDatas())
+            {
+                itemDatas.AddData(_item);
+            }
+
+            // 기본 퀘스트 생성
+            var killMonsterQuests = new Datas<KillMonsterQuest>();
+            // 아이템 리스트 생성
+            var questRewardItems = new List<Item> { itemDatas.GetDatas()[0] };
+            
+            killMonsterQuests.AddData(new KillMonsterQuest(
+                "슬라임 퇴치", 
+                "슬라임 1마리 퇴치하기", 
+                100, 
+                50, 
+                questRewardItems, 
+                monsterDatas.GetDatas()[0], 
+                1));
+            
+            var playerStatQuest = new Datas<PlayerStatQuest>();
+            playerStatQuest.AddData(new PlayerStatQuest(
+                "공격력 강화", 
+                "공격력 5 이상 달성하기", 
+                200, 
+                100, 
+                questRewardItems, 
+                questRequireStatName.공격력, 
+                5));
+            
+            monsterQuest = killMonsterQuests;
+            statQuest = playerStatQuest;
+
+            isLoading = false; // 위에 데이터를 전부 받아오면 그때 isLoading을 false로 변경 -> 애니메이션은 Task를 반환
+            await loadingTask; // 애니메이션 Task가 완전히 끝날 때까지 대기
+
+            Console.Clear();
+            Console.WriteLine("데이터 로딩 완료!");
+            await Task.Delay(1000);
+
+            isDataLoad = true;
+        }
+        catch (Exception ex)
         {
-            itemDatas.AddData(_item);
+            Console.WriteLine($"데이터 로드 중 오류 발생: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
+            isDataLoadFail = true;
         }
-
-        var killMonsterQuests = await LoadWithConsoleLoading("KillMonsterQuest", "A1:G", row => new KillMonsterQuest(
-            row[0]?.ToString() ?? "", // name
-            row[1]?.ToString() ?? "", // desc
-            int.Parse(row[2]?.ToString() ?? "1"), // gold
-            int.Parse(row[3]?.ToString() ?? "1"), // exp 
-            itemDatas.GetData(row[4]?.ToString() ?? "0"), // item
-            monsterDatas.GetData(int.Parse(row[5]?.ToString() ?? "0")), // monster
-            int.Parse(row[6]?.ToString() ?? "1")) // goal
-
-
-        );
-
-        var playerStatQuest = await LoadWithConsoleLoading("PlayerStatQuest", "A1:G", row => new PlayerStatQuest(
-            row[0]?.ToString() ?? "",
-            row[1]?.ToString() ?? "",
-            int.Parse(row[2]?.ToString() ?? "1"),
-            int.Parse(row[3]?.ToString() ?? "1"),
-            itemDatas.GetData(row[4]?.ToString() ?? "0"),
-            (questRequireStatName)int.Parse(row[5]?.ToString() ?? "1"),
-            int.Parse(row[6]?.ToString() ?? "1")
-
-            )
-
-
-        );
-        monsterQuest = killMonsterQuests;
-        statQuest = playerStatQuest;
-
-
-
-
-        isLoading = false; // 위에 데이터를 전부 받아오면 그때 isLoading을 false로 변경 -> 애니메이션은 Task를 반환
-        await loadingTask; // 애니메이션 Task가 완전히 끝날 때까지 대기
-
-        Console.Clear();
-        Console.WriteLine("데이터 로딩 완료!");
-        await Task.Delay(1000);
-
-
-        //Console.WriteLine("\n\n");
-        //Console.WriteLine("=====Monster=====");
-        //foreach (var monster in monsterDatas.GetDatas())
-        //{
-        //    Console.WriteLine($"{monster.Name} {monster.TotalHp} {monster.TotalMp} {monster.CurrentAttackPower} {monster.CurrentDefensivePower}");
-        //}
-
-        //Console.WriteLine("\n");
-        //Console.WriteLine("=====Items=====");
-        //foreach (var item in itemDatas.GetDatas())
-        //{
-        //    Console.WriteLine($"{item.ItemName} | {item.ItemType}  | {item.ItemAbility} | {item.ItemDescription}  | {item.ItemPrice}");
-        //}
-
-        isDataLoad = true;
     }
 
     private async Task<Datas<T>> LoadWithConsoleLoading<T>(string sheetName, string range, Func<JToken, T> parseFunc)
@@ -195,46 +183,79 @@ public class DataManager
     {
         string spreadsheetId;
         string apiKey;
-        // AppDomain.CurrentDomain.BaseDirectory는 .exe파일의 위치를 가져온다.
-        string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
-
-        // using 블록을 사용하면 파일을 읽고 난 뒤 자동으로 Stream을 닫는다.
-        using (StreamReader file = File.OpenText(path))
+        try
         {
-            using (JsonTextReader reader = new JsonTextReader(file))
+            // AppDomain.CurrentDomain.BaseDirectory는 .exe파일의 위치를 가져온다.
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+            
+            if (!File.Exists(path))
             {
-                JObject _json = (JObject)JToken.ReadFrom(reader);
-
-
-                spreadsheetId = _json["SpreadsheetId"].ToString();
-                apiKey = _json["ApiKey"].ToString();
+                Console.WriteLine($"오류: {path} 파일을 찾을 수 없습니다.");
+                isDataLoadFail = true;
+                return new Datas<T>();
             }
+
+            // using 블록을 사용하면 파일을 읽고 난 뒤 자동으로 Stream을 닫는다.
+            using (StreamReader file = File.OpenText(path))
+            {
+                using (JsonTextReader reader = new JsonTextReader(file))
+                {
+                    JObject _json = (JObject)JToken.ReadFrom(reader);
+
+                    spreadsheetId = _json["SpreadsheetId"].ToString();
+                    apiKey = _json["ApiKey"].ToString();
+                    
+                    if (spreadsheetId == "여기에 구글 스프레드시트 ID를 입력하세요" || 
+                        apiKey == "여기에 Google API 키를 입력하세요" ||
+                        apiKey == "YOUR_GOOGLE_API_KEY")
+                    {
+                        Console.WriteLine("오류: appsettings.json 파일에 실제 스프레드시트 ID와 API 키를 입력해야 합니다.");
+                        isDataLoadFail = true;
+                        return new Datas<T>();
+                    }
+                }
+            }
+
+            string url = $"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheetId}/values/{sheetName}!{range}?key={apiKey}";
+
+            using HttpClient client = new HttpClient();
+            var response = await client.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("에러 발생: " + response.StatusCode);
+                Console.WriteLine("URL: " + url);
+                isDataLoadFail = true;
+                return new Datas<T>();
+            }
+
+            string json = await response.Content.ReadAsStringAsync();
+            var data = JObject.Parse(json);
+            var values = data["values"];
+            
+            if (values == null || !values.Any())
+            {
+                Console.WriteLine($"오류: {sheetName} 시트에서 데이터를 찾을 수 없습니다.");
+                isDataLoadFail = true;
+                return new Datas<T>();
+            }
+            
+            var result = new Datas<T>();
+
+            for (int i = 1; i < values.Count(); i++) // 첫 줄은 헤더
+            {
+                var row = values[i];
+                result.AddData(parseFunc(row));
+            }
+
+            return result;
         }
-
-        string url = $"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheetId}/values/{sheetName}!{range}?key={apiKey}";
-
-        using HttpClient client = new HttpClient();
-        var response = await client.GetAsync(url);
-
-        if (!response.IsSuccessStatusCode)
+        catch (Exception ex)
         {
-            Console.WriteLine("에러 발생: " + response.StatusCode);
+            Console.WriteLine($"데이터 로드 중 오류 발생: {ex.Message}");
             isDataLoadFail = true;
             return new Datas<T>();
         }
-
-        string json = await response.Content.ReadAsStringAsync();
-        var data = JObject.Parse(json);
-        var values = data["values"];
-        var result = new Datas<T>();
-
-        for (int i = 1; i < values.Count(); i++) // 첫 줄은 헤더
-        {
-            var row = values[i];
-            result.AddData(parseFunc(row));
-        }
-
-        return result;
     }
 
 
